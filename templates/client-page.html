@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="services-container" id="client-services">
+    <h2>Client Services</h2>
+    <ul>
+        <li><a href="#" data-content-id="apointment-scheduling-content">Schedule an Appointment</a></li>
+        <li><a href="#" data-content-id="doctors-calendar-content">Doctor's Calendar</a></li>
+        <li><a href="#" data-content-id="medical-history-access-content">Medical History Access</a></li>
+    </ul>
+</div>
+
+<div id="content-container">
+    <div id="apointment-scheduling-content" style="display: none;">
+        {% include "patient-registration.html" %}
+    </div>
+    <div id="doctors-calendar-content" style="display: none;">
+        
+    </div>
+    <div id="medical-history-access-content" style="display: none;">
+
+    </div>
+</div>
+
+<script>
+    const contentContainer = document.getElementById("content-container");
+    const serviceLinks = document.querySelectorAll(".services-container ul li a");
+    
+    serviceLinks.forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const contentId = link.getAttribute("data-content-id");
+            displayContent(contentId);
+        });
+    });
+
+    function displayContent(contentId) {
+        // Hide all content elements
+        document.querySelectorAll("#content-container > div").forEach(content => {
+            content.style.display = "none";
+        });
+
+        // Display the selected content
+        const selectedContent = document.getElementById(contentId);
+        selectedContent.style.display = "block";
+    }
+</script>
+{% endblock %}

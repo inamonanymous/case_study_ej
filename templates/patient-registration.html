@@ -1,0 +1,210 @@
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+</style>
+<script>
+    function enablePatientDetails(radioBtn) {
+            // Get all the radio buttons with the name 'treatment'
+            const radioButtons = document.querySelectorAll('input[name="treatment"]');
+
+            // Iterate through all radio buttons
+            radioButtons.forEach(function(radioButton) {
+                // Get the fieldset associated with the radio button
+                const fieldset = radioButton.closest('fieldset');
+
+                if (radioButton === radioBtn && radioBtn.checked) {
+                    // If the clicked radio button is checked, show its associated fieldset
+                    fieldset.style.display = 'block';
+                } else {
+                    // If the radio button is not the clicked one or is unchecked, hide the associated fieldset
+                    fieldset.style.display = 'none';
+                }
+            });
+
+            // Show or hide the patient details section based on the clicked radio button
+            const patientDetailsSection = document.getElementById('patient-details-section');
+            if (radioBtn.checked) {
+                patientDetailsSection.style.display = 'block';
+            } else {
+                patientDetailsSection.style.display = 'none';
+            }
+        }
+</script>
+<div class="form-container">
+    <h2>Registration Form</h2>
+    <form action="/patient-registration" method="post" id="registration-form">
+        <h3>Select a Treatment:</h3>
+        <fieldset>
+            <legend><b>Dental Examinations</b></legend>
+            <input type="radio" id="treatment-1" name="treatment" value="Dental Examinations" onchange="enablePatientDetails(this)">
+            <label for="treatment-1">Regular check-ups to assess your overall oral health, detect dental problems early, and develop treatment plans.</label><br>
+        </fieldset>
+
+        <!-- Dental Cleanings -->
+        <fieldset>
+            <legend><b>Dental Cleanings</b></legend>
+            <input type="radio" id="treatment-2" name="treatment" value="Dental Cleanings" onchange="enablePatientDetails(this)">
+            <label for="treatment-2">Professional cleanings to remove plaque, tartar, and stains from teeth. These are typically performed by dental hygienists.</label><br>
+        </fieldset>
+
+        <!-- X-rays -->
+        <fieldset>
+            <legend><b>X-rays</b></legend>
+            <input type="radio" id="treatment-3" name="treatment" value="X-rays" onchange="enablePatientDetails(this)">
+            <label for="treatment-3">Dental clinics use X-rays to diagnose dental issues not visible to the naked eye, such as cavities, impacted teeth, and bone loss.</label><br>
+        </fieldset>
+
+        <!-- Fillings -->
+        <fieldset>
+            <legend><b>Fillings</b></legend>
+            <input type="radio" id="treatment-4" name="treatment" value="Fillings" onchange="enablePatientDetails(this)">
+            <label for="treatment-4">Treatment for dental cavities involving the removal of decayed tooth material and filling the area with various materials like amalgam or composite resin.</label><br>
+        </fieldset>
+
+        <!-- Crowns and Bridges -->
+        <fieldset>
+            <legend><b>Crowns and Bridges</b></legend>
+            <input type="radio" id="treatment-5" name="treatment" value="Crowns and Bridges" onchange="enablePatientDetails(this)">
+            <label for="treatment-5">Crowns are used to restore damaged or decayed teeth, while bridges replace missing teeth by anchoring artificial teeth to adjacent natural teeth.</label><br>
+        </fieldset>
+
+        <!-- Dentures -->
+        <fieldset>
+            <legend><b>Dentures</b></legend>
+            <input type="radio" id="treatment-6" name="treatment" value="Dentures" onchange="enablePatientDetails(this)">
+            <label for="treatment-6">Removable appliances used to replace missing teeth and surrounding tissue.</label><br>
+        </fieldset>
+
+        <!-- Root Canal Therapy -->
+        <fieldset>
+            <legend><b>Root Canal Therapy</b></legend>
+            <input type="radio" id="treatment-7" name="treatment" value="Root Canal Therapy" onchange="enablePatientDetails(this)">
+            <label for="treatment-7">Treatment for infected or damaged tooth pulp, which involves removing the infected material and sealing the tooth.</label><br>
+        </fieldset>
+
+        <!-- Tooth Extractions -->
+        <fieldset>
+            <legend><b>Tooth Extractions</b></legend>
+            <input type="radio" id="treatment-8" name="treatment" value="Tooth Extractions" onchange="enablePatientDetails(this)">
+            <label for="treatment-8">Removal of damaged, decayed, or impacted teeth.</label><br>
+        </fieldset>
+
+        <!-- Orthodontic Services -->
+        <fieldset>
+            <legend><b>Orthodontic Services</b></legend>
+            <input type="radio" id="treatment-9" name="treatment" value="Orthodontic Services" onchange="enablePatientDetails(this)">
+            <label for="treatment-9">This includes braces, aligners (e.g., Invisalign), and other treatments to correct misaligned teeth and jaw issues.</label><br>
+        </fieldset>
+
+        <!-- Oral Surgery -->
+        <fieldset>
+            <legend><b>Oral Surgery</b></legend>
+            <input type="radio" id="treatment-10" name="treatment" value="Oral Surgery" onchange="enablePatientDetails(this)">
+            <label for="treatment-10">Procedures such as wisdom tooth extraction, dental implant placement, and jaw surgery.</label><br>
+        </fieldset>
+
+        <!-- Gum Disease Treatment -->
+        <fieldset>
+            <legend><b>Gum Disease Treatment</b></legend>
+            <input type="radio" id="treatment-11" name="treatment" value="Gum Disease Treatment" onchange="enablePatientDetails(this)">
+            <label for="treatment-11">Management of gum conditions like gingivitis and periodontitis through scaling, root planing, and surgical procedures.</label><br>
+        </fieldset>
+
+        <!-- Cosmetic Dentistry -->
+        <fieldset>
+            <legend><b>Cosmetic Dentistry</b></legend>
+            <input type="radio" id="treatment-12" name="treatment" value="Cosmetic Dentistry" onchange="enablePatientDetails(this)">
+            <label for="treatment-12">Services like teeth whitening, veneers, bonding, and contouring to enhance the appearance of your teeth.</label><br>
+        </fieldset>
+
+        <!-- Oral Cancer Screening -->
+        <fieldset>
+            <legend><b>Oral Cancer Screening</b></legend>
+            <input type="radio" id="treatment-13" name="treatment" value="Oral Cancer Screening" onchange="enablePatientDetails(this)">
+            <label for="treatment-13">Regular examinations to detect signs of oral cancer.</label><br>
+        </fieldset>
+
+        <!-- Temporomandibular Joint (TMJ) Treatment -->
+        <fieldset>
+            <legend><b>Temporomandibular Joint (TMJ) Treatment</b></legend>
+            <input type="radio" id="treatment-14" name="treatment" value="Temporomandibular Joint (TMJ) Treatment" onchange="enablePatientDetails(this)">
+            <label for="treatment-14">Management of jaw joint disorders and associated pain.</label><br>
+        </fieldset>
+
+        <!-- Sedation Dentistry -->
+        <fieldset>
+            <legend><b>Sedation Dentistry</b></legend>
+            <input type="radio" id="treatment-15" name="treatment" value="Sedation Dentistry" onchange="enablePatientDetails(this)">
+            <label for="treatment-15">Options for patients with dental anxiety, including nitrous oxide (laughing gas), oral sedatives, or intravenous (IV) sedation.</label><br>
+        </fieldset>
+
+        <!-- Preventive Education -->
+        <fieldset>
+            <legend><b>Preventive Education</b></legend>
+            <input type="radio" id="treatment-16" name="treatment" value="Preventive Education" onchange="enablePatientDetails(this)">
+            <label for="treatment-16">Education on proper oral hygiene, diet, and habits to maintain good oral health.</label><br>
+        </fieldset>
+
+        <!-- Emergency Dental Care -->
+        <fieldset>
+            <legend><b>Emergency Dental Care</b></legend>
+            <input type="radio" id="treatment-17" name="treatment" value="Emergency Dental Care" onchange="enablePatientDetails(this)">
+            <label for="treatment-17">Treatment for dental emergencies such as severe toothache, broken teeth, or injuries.</label><br>
+        </fieldset>
+
+        <!-- Teeth Whitening -->
+        <fieldset>
+            <legend><b>Teeth Whitening</b></legend>
+            <input type="radio" id="treatment-18" name="treatment" value="Teeth Whitening" onchange="enablePatientDetails(this)">
+            <label for="treatment-18">Professional teeth whitening procedures to enhance the color and brightness of your teeth.</label><br>
+        </fieldset>
+
+        <!-- Implant Dentistry -->
+        <fieldset>
+            <legend><b>Implant Dentistry</b></legend>
+            <input type="radio" id="treatment-19" name="treatment" value="Implant Dentistry" onchange="enablePatientDetails(this)">
+            <label for="treatment-19">Placement of dental implants to replace missing teeth.</label><br>
+        </fieldset>
+
+        <!-- Children's Dentistry -->
+        <fieldset>
+            <legend><b>Children's Dentistry</b></legend>
+            <input type="radio" id="treatment-20" name="treatment" value="Children's Dentistry" onchange="enablePatientDetails(this)">
+            <label for="treatment-20">Specialized care for pediatric patients, including dental check-ups, cleanings, and treatments tailored to children's needs.</label><br>
+        </fieldset>
+
+        <!-- Patient Details Section -->
+        <div class="form-section" id="patient-details-section" style="display: none;">
+            <h2>Patient Details</h2>
+            <label for="firstname">Firstname:</label>
+            <input type="text" id="firstname" name="firstname" required><br><br>
+
+            <label for="lastname">Lastname:</label>
+            <input type="text" id="lastname" name="lastname" required><br><br>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required><br><br>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select><br><br>
+
+            <label for="phone">Contact Number:</label>
+            <input type="text" id="phone" name="phone" required><br><br>
+
+            <label for="email">Email Address:</label>
+            <input type="text" id="email" name="email" required><br><br>
+
+            <label for="address">Location Address:</label>
+            <input type="text" id="address" name="address" required><br><br>
+            <button type="submit">Register</button>
+        </div>
+        
+    </form>
+</div>
+
