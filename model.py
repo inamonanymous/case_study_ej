@@ -24,12 +24,17 @@ class Admin(db.Model):
     contact_number = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(100), nullable=False)
 
+    @classmethod
+    def login_is_true(cls, username, password):
+        admin_obj = cls.query.filter_by(username=username).first()
+        return admin_obj and admin_obj.password == password
+
 
 class Appointments(db.Model):
     __tablename__ = 'appointments'
     appointment_id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, nullable=False)
-    admin_id = db.Column(db.Integer, nullable=False)
+    admin_id = db.Column(db.Integer)
     appointment_date = db.Column(db.Date, nullable=False)
     appointment_time = db.Column(db.Time, nullable=False)
     status = db.Column(db.SmallInteger)

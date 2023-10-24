@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+<form action="/schedule-appointment" method="post">
+    <label for="date">Date (YYYY-MM-DD):</label>
+    <input type="text" id="date" name="date" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" required><br><br>
+
+    <label for="time">Time (HH:MM:SS):</label>
+    <input type="text" id="time" name="time" placeholder="HH:MM:SS" pattern="\d{2}:\d{2}:\d{2}" required><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="services-container" id="client-services">
+    <h2>Welcome <i>{{ current_user.username }}</i></h2>
+    <ul>
+        <li><a href="#" data-content-id="manage-patients-content">Manage Patients</a></li>
+        <li><a href="#" data-content-id="manage-appointments-content">Manage Appointments</a></li>
+        <li><a href="#" data-content-id="manage-staff-content">Manage Staff</a></li>
+        <li><a href="#" data-content-id="system-settings-content">System Settings</a></li>
+    </ul>
+</div>
+
+<div id="content-container">
+    <div id="manage-patients-content" style="display: none;">
+        asad
+    </div>
+    <div id="manage-appointments-content" style="display: none;">
+        jhgf
+    </div>
+    <div id="manage-staff-content" style="display: none;">
+        iuy
+    </div>
+    <div id="system-settings-content" style="display: none;">
+        settings
+    </div>
+</div>
+
+<script>
+    const contentContainer = document.getElementById("content-container");
+    const serviceLinks = document.querySelectorAll(".services-container ul li a");
+    
+    serviceLinks.forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const contentId = link.getAttribute("data-content-id");
+            displayContent(contentId);
+        });
+    });
+
+    function displayContent(contentId) {
+        // Hide all content elements
+        document.querySelectorAll("#content-container > div").forEach(content => {
+            content.style.display = "none";
+        });
+
+        // Display the selected content
+        const selectedContent = document.getElementById(contentId);
+        selectedContent.style.display = "block";
+    }
+</script>
+{% endblock %}
