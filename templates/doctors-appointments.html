@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+<table>
+    <thead>
+        <tr>
+            <th>Appointment ID</th>
+            <th>Patient ID</th>
+            <th>Appointment Date</th>
+            <th>Appointment Time</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in all_appointments %}
+            <tr>
+                <td>{{ i.appointment_id }}</td>
+                <td>{{ i.patient_id }}</td>
+                <td>{{ i.appointment_date }}</td>
+                <td>{{ i.appointment_time }}</td>
+                <td>{{ i.status }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+appointment_id = db.Column(db.Integer, primary_key=True)
+    patient_id = db.Column(db.Integer, nullable=False)
+    admin_id = db.Column(db.Integer)
+    appointment_date = db.Column(db.Date, nullable=False)
+    appointment_time = db.Column(db.Time, nullable=False)
+    status = db.Column(db.SmallInteger)

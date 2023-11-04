@@ -53,7 +53,9 @@ def patient_registration():
 
 @app.route('/client-page')
 def client_page():
-    return render_template('client-page.html')
+    all_appointments = Appointments.query.all()
+    print(all_appointments)
+    return render_template('client-page.html', all_appointments=all_appointments)
 
 #admin logic
 #-------------------------------------------------------------------------------------
@@ -82,6 +84,7 @@ def admin_login():
 
 @app.route('/')
 def index():
+    session.clear()
     return render_template('index.html')
 
 if __name__ == "__main__":
