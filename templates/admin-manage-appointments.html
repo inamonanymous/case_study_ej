@@ -1,0 +1,54 @@
+<table>
+    <thead>
+        <th>
+            Appointment ID
+        </th>
+        <th>
+            Patient ID
+        </th>
+        <th>
+            Admin ID
+        </th>
+        <th>
+            Appointment Date
+        </th>
+        <th>
+            Appointment Time
+        </th>
+        <th>
+            Status
+        </th>
+        <th>
+            Action
+        </th>
+    </thead>
+    <tbody>
+        {% for i in appointments_obj %}
+        <tr>
+            <td>
+                {{ i.appointment_id }}
+            </td>
+            <td>
+                {{ i.patient_id }}
+            </td>
+            <td>
+                {{ i.admin_id }}
+            </td>
+            <td>
+                {{ i.appointment_date }}
+            </td>
+            <td>
+                {{ i.appointment_time }}
+            </td>
+            <td>
+                {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
+            </td>
+            <td>
+                <button>Approve</button>
+                <button>Completed</button>
+                <button>Delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

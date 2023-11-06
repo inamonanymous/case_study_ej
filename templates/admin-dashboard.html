@@ -1,27 +1,31 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="services-container" id="client-services">
-    <h2>Welcome <i>{{ current_user.username }}</i></h2>
+    <h2>Welcome <span>{{ current_staff.firstname }} {{ current_staff.lastname }}</span></h2>
     <ul>
         <li><a href="#" data-content-id="manage-patients-content">Manage Patients</a></li>
         <li><a href="#" data-content-id="manage-appointments-content">Manage Appointments</a></li>
         <li><a href="#" data-content-id="manage-staff-content">Manage Staff</a></li>
+        <li><a href="#" data-content-id="manage-services-content">Manage Services</a></li>
         <li><a href="#" data-content-id="system-settings-content">System Settings</a></li>
     </ul>
 </div>
 
 <div id="content-container">
     <div id="manage-patients-content" style="display: none;">
-        asad
+        {% include "admin-manage-patients.html" %}
     </div>
     <div id="manage-appointments-content" style="display: none;">
-        jhgf
+        {% include "admin-manage-appointments.html" %}
     </div>
     <div id="manage-staff-content" style="display: none;">
-        iuy
+        {% include "admin-manage-staff.html" %}
+    </div>
+    <div id="manage-services-content" style="display: none;">
+        {% include "admin-manage-services.html" %}
     </div>
     <div id="system-settings-content" style="display: none;">
-        settings
+        {% include "admin-system-settings.html" %}
     </div>
 </div>
 

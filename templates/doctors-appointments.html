@@ -11,7 +11,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for i in all_appointments %}
+        {% for i in approved_appointments %}
             <tr>
                 <td>{{ i.appointment_id }}</td>
                 <td>{{ i.patient_id }}</td>
@@ -23,10 +23,3 @@
         </tbody>
     </table>
 {% endblock %}
-
-appointment_id = db.Column(db.Integer, primary_key=True)
-    patient_id = db.Column(db.Integer, nullable=False)
-    admin_id = db.Column(db.Integer)
-    appointment_date = db.Column(db.Date, nullable=False)
-    appointment_time = db.Column(db.Time, nullable=False)
-    status = db.Column(db.SmallInteger)

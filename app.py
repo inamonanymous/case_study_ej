@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from model import db, Patient, Appointments, Admin, Staff
+from model import db, Patient, Appointments, Admin, Services, Staff
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.secret_key = "secret+key"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/dentistry'
 db.init_app(app)
+migrate = Migrate(app, db)
 
 @app.route('/schedule-appointment', methods=['POST', 'GET'])
 def schedule_appointment():
@@ -12,6 +14,9 @@ def schedule_appointment():
         current_patient = Patient.query.filter_by(patient_id=session.get('patient-id')).first()
         if current_patient:
             date, time = request.form['date'], request.form['time']
+            appointment_obj = Appointments.query.filter_by(appointment_date=date, status=1).first()
+            if appointment_obj:
+                return "schedule different date"
             appointment_entry = Appointments(
                 patient_id=current_patient.patient_id,
                 admin_id=None,
@@ -28,8 +33,6 @@ def schedule_appointment():
 @app.route('/patient-schedule/')
 def patient_schedule():
     if 'patient-id' in session:
-        
-        
         return render_template('schedule-appointment.html')
     return redirect(url_for('client_page'))
         
@@ -54,8 +57,13 @@ def patient_registration():
 @app.route('/client-page')
 def client_page():
     all_appointments = Appointments.query.all()
-    print(all_appointments)
-    return render_template('client-page.html', all_appointments=all_appointments)
+    approved_appointments = Appointments.query.filter_by(status=1).all()
+    completed_appointments = Appointments.query.filter_by(status=2).all()
+    services = Services.query.all()
+    return render_template('client-page.html', all_appointments=all_appointments, 
+                           approved_appointments=approved_appointments,
+                           completed_appointments=completed_appointments,
+                           services=services)
 
 #admin logic
 #-------------------------------------------------------------------------------------
@@ -64,7 +72,19 @@ def client_page():
 def admin_dashboard():
     if 'admin-username' in session:
         current_user = Admin.query.filter_by(username=session.get('admin-username', "")).first()
-        return render_template('admin-dashboard.html', current_user=current_user)
+        current_staff = Staff.query.filter_by(staff_id=current_user.staff_id).first()
+        patients_obj = Patient.query.all()
+        appointments_obj = Appointments.query.all()
+        staffs_obj = Staff.query.all()
+        services_obj = Services.query.all()
+
+        return render_template('admin-dashboard.html',
+                                current_user=current_user, 
+                                current_staff=current_staff,
+                                patients_obj=patients_obj,
+                                appointments_obj=appointments_obj,
+                                staffs_obj=staffs_obj,
+                                services_obj=services_obj)
     return redirect(url_for('index'))
 
 @app.route('/admin-auth', methods=['POST', 'GET'])

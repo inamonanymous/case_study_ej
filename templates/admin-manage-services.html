@@ -1,0 +1,31 @@
+<div>
+    <button>Add Service</button>
+</div>
+<div>
+    <table>
+        <thead>
+            <th>
+                Service ID
+            </th>
+            <th>
+                Service Title
+            </th>
+            <th>
+                Service Description
+            </th>
+            <th>
+                Service Price
+            </th>
+        </thead>
+        <tbody>
+            {% for i in services_obj %}
+            <tr>
+                <td>{{ i.service_id }}</td>
+                <td><b>{{ i.service_title }}</b></td>
+                <td>{{ i.service_description }}</td>
+                <td>{{ i.service_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

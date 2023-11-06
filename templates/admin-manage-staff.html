@@ -1,0 +1,55 @@
+    <div>
+        <table>
+            <thead>
+                <th>
+                    Staff ID
+                </th>
+                <th>
+                    Firstname
+                </th>
+                <th>
+                    Lastname
+                </th>
+                <th>
+                    Position
+                </th>
+                <th>
+                    Contact Number
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Action
+                </th>
+            </thead>
+            <tbody>
+                {% for i in staffs_obj %}
+                <tr>
+                    <td>
+                        {{ i.staff_id }}
+                    </td>
+                    <td>
+                        {{ i.firstname }}
+                    </td>
+                    <td>
+                        {{ i.lastname }}
+                    </td>
+                    <td>
+                        {{ i.position }}
+                    </td>
+                    <td>
+                        {{ i.contact_number }}
+                    </td>
+                    <td>
+                        {{ i.email }}
+                    </td>
+                    <td>
+                        <Button>Delete</Button>
+                        <Button>Edit</Button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>

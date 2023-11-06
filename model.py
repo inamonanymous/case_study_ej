@@ -19,10 +19,11 @@ class Admin(db.Model):
     admin_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    firstname = db.Column(db.String(100), nullable=False)
+    """firstname = db.Column(db.String(100), nullable=False)
     lastname = db.Column(db.String(100), nullable=False)
     contact_number = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)"""
+    staff_id = db.Column(db.Integer, nullable=False)
 
     @classmethod
     def login_is_true(cls, username, password):
@@ -37,7 +38,7 @@ class Appointments(db.Model):
     admin_id = db.Column(db.Integer)
     appointment_date = db.Column(db.Date, nullable=False)
     appointment_time = db.Column(db.Time, nullable=False)
-    status = db.Column(db.SmallInteger)
+    status = db.Column(db.SmallInteger, comment="0-pending, 1-approved, 2-completed")
     
 
 class Staff(db.Model):
@@ -45,6 +46,13 @@ class Staff(db.Model):
     staff_id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(100), nullable=False)
     lastname = db.Column(db.String(100), nullable=False)
-    position = db.Column(db.SmallInteger)
+    position = db.Column(db.SmallInteger, comment="0-master, 1-dentist, 2-hygienist, 3-receiptionist")
     contact_number = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(100), nullable=False)
+
+class Services(db.Model):
+    __tablename__ = 'services'
+    service_id = db.Column(db.Integer, primary_key=True)
+    service_title = db.Column(db.String(100), nullable=False)
+    service_description = db.Column(db.String(255), nullable=False)
+    service_price = db.Column(db.Float)
