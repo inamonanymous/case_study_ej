@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="services-container" id="client-services">
-    <h2>Client Services</h2>
+    <h2>unidentified Dental Information System</h2>
     <ul>
         <li><a href="#" data-content-id="apointment-scheduling-content">Schedule an Appointment</a></li>
         <li><a href="#" data-content-id="doctors-calendar-content">Doctor's Calendar</a></li>
@@ -22,26 +22,71 @@
 </div>
 
 <script>
-    const contentContainer = document.getElementById("content-container");
-    const serviceLinks = document.querySelectorAll(".services-container ul li a");
-    
-    serviceLinks.forEach(link => {
-        link.addEventListener("click", function (e) {
-            e.preventDefault();
-            const contentId = link.getAttribute("data-content-id");
-            displayContent(contentId);
-        });
-    });
-
-    function displayContent(contentId) {
-        // Hide all content elements
-        document.querySelectorAll("#content-container > div").forEach(content => {
-            content.style.display = "none";
-        });
-
-        // Display the selected content
-        const selectedContent = document.getElementById(contentId);
-        selectedContent.style.display = "block";
+    let calendar = null
+    function handleCalendarLinkClick(event) {
+        event.preventDefault(); // Prevent the link from navigating away
+        fetchAndRenderCalendar(); // Call your calendar function
     }
+    document.addEventListener('DOMContentLoaded', function(){
+        const contentContainer = document.getElementById("content-container");
+        const serviceLinks = document.querySelectorAll(".services-container ul li a");
+        serviceLinks.forEach(link => {
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                const contentId = link.getAttribute("data-content-id");
+                displayContent(contentId);
+            });
+        });
+
+        function displayContent(contentId) {
+            // Hide all content elements
+            document.querySelectorAll("#content-container > div").forEach(content => {
+                content.style.display = "none";
+            });
+
+            // Display the selected content
+            const selectedContent = document.getElementById(contentId);
+            selectedContent.style.display = "block";
+            if (contentId === 'doctors-calendar-content') {
+                fetchAndRenderCalendar(); // This function will render the calendar
+            }
+        }
+        function fetchAndRenderCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            axios.get('/api/appointments')
+            .then(function(response) {
+                // Check if the calendar instance already exists
+                if (!calendar) {
+                    calendar = new FullCalendar.Calendar(calendarEl, {
+                        plugins: ['interaction', 'dayGrid', 'timeGrid'],
+                        defaultView: 'dayGridMonth',
+                        eventRender: function(info) {
+                            var date = info.event.start;
+                            var currentDate = new Date();
+                            if (date.getDate() === currentDate.getDate() &&
+                            date.getMonth() === currentDate.getMonth() &&
+                            date.getFullYear() === currentDate.getFullYear()) {
+                                info.el.style.backgroundColor = 'yellow';
+                                info.el.style.color = 'red';
+                            }
+                        }
+                    });
+                    calendar.render();
+                }
+
+                // Update the events of the existing calendar
+                calendar.removeAllEvents(); // Clear existing events
+                calendar.addEventSource(response.data); // Add new events
+                calendar.refetchEvents(); // Redraw the calendar
+                calendar.updateSize(); // Update the calendar size
+
+                console.log('calendar updated');
+            })
+            .catch(function(error) {
+                console.error('Error fetching data:', error);
+            });
+        }
+    });
 </script>
+
 {% endblock %}

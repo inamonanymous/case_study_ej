@@ -1,55 +1,148 @@
-    <div>
-        <table>
-            <thead>
-                <th>
-                    Staff ID
-                </th>
-                <th>
-                    Firstname
-                </th>
-                <th>
-                    Lastname
-                </th>
-                <th>
-                    Position
-                </th>
-                <th>
-                    Contact Number
-                </th>
-                <th>
-                    Email
-                </th>
-                <th>
-                    Action
-                </th>
-            </thead>
-            <tbody>
-                {% for i in staffs_obj %}
-                <tr>
-                    <td>
-                        {{ i.staff_id }}
-                    </td>
-                    <td>
-                        {{ i.firstname }}
-                    </td>
-                    <td>
-                        {{ i.lastname }}
-                    </td>
-                    <td>
-                        {{ i.position }}
-                    </td>
-                    <td>
-                        {{ i.contact_number }}
-                    </td>
-                    <td>
-                        {{ i.email }}
-                    </td>
-                    <td>
-                        <Button>Delete</Button>
-                        <Button>Edit</Button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div>
+    <button id="add-staff-btn" onclick="addUserForm()">
+        Add Staff
+    </button>
+</div>
+<div id="add-staff-form" style="display: none;">
+    <form action="/admin-save-staff" method="post">
+        <label for="firstname">Firstname</label>
+        <input type="text" name="firstname" id="firstname">
+        <br>
+        <label for="lastname">Lastname</label>
+        <input type="text" name="lastname" id="lastname">
+        <br>
+        <label for="position">Position</label>
+        <select name="position" id="position">
+            <option value="-1" selected disabled>Select option</option>
+            <option value="0">Master</option>
+            <option value="1">Dentist</option>
+            <option value="2">Hygienist</option>
+            <option value="3">Receptionist</option>
+        </select>
+        <br>
+        <label for="phone">Contact Number</label>
+        <input type="text" name="phone" id="phone">
+        <br>
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email">
+        <br>
+        <label for="username">Username</label>
+        <input type="username" name="username" id="username">
+        <br>
+        <button type="submit">Save</button>
+    </form>
+</div>
+<div>
+    <table>
+        <thead>
+            <th>
+                Staff ID
+            </th>
+            <th>
+                Firstname
+            </th>
+            <th>
+                Lastname
+            </th>
+            <th>
+                Position
+            </th>
+            <th>
+                Contact Number
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Action
+            </th>
+        </thead>
+        <tbody>
+            {% for i in staffs_obj %}
+            <tr>
+                <td>
+                    {{ i.staff_id }}
+                </td>
+                <td>
+                    {{ i.firstname }}
+                </td>
+                <td>
+                    {{ i.lastname }}
+                </td>
+                <td>
+                    {{ i.position }}
+                </td>
+                <td>
+                    {{ i.contact_number }}
+                </td>
+                <td>
+                    {{ i.email }}
+                </td>
+                <td>
+                    <a href="#" onclick="editUserForm({{ i.staff_id }})">Edit</a>
+                    <a href="/admin-delete-staff/{{ i.staff_id }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    
+    function editUserForm(staff_id){
+        let user_entry = {};
+
+        let prompts = [
+            { name: "firstname", message: "Please enter User's firstname" },
+            { name: "lastname", message: "Please enter User's lastname" },
+            { name: "position", message: "Please enter User's position" },
+            { name: "phone", message: "Please enter User's contact number" },
+            { name: "email", message: "Please enter User's email" }
+        ];
+
+        let isValid = true;
+
+        for (let i = 0; i < prompts.length; i++) {
+            let input = prompt(prompts[i].message);
+            if (input === null || input === "") {
+                isValid = false;
+                break;
+            } else {
+                user_entry[prompts[i].name] = input;
+            }
+        }
+        console.log(user_entry);
+        if (isValid) {
+            // Send the user_entry object to the Flask backend via Axios
+            axios.post(`/admin-edit-staff/${staff_id}`, user_entry)
+                .then(response => {
+                    console.log(response.data);
+                    document.getElementById("demo").innerHTML = "Form submitted successfully.";
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        } else {
+            document.getElementById("demo").innerHTML = "User cancelled the prompt or left a field empty.";
+        }
+    }
+
+    function addUserForm(){
+        const addStaffForm = document.getElementById("add-staff-form");
+        const button = document.getElementById("add-staff-btn");
+        if (button && addStaffForm) {
+            
+            if (addStaffForm.style.display === "none") {
+                    addStaffForm.style.display = "block";
+                    button.innerHTML = "Hide";
+                } else {
+                    addStaffForm.style.display = "none";
+                    button.innerHTML = "Add Staff";
+                }
+            
+        } else {
+            console.error('Button or form not found!');
+        }
+        }
+</script>

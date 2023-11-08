@@ -1,54 +1,292 @@
-<table>
-    <thead>
-        <th>
-            Appointment ID
-        </th>
-        <th>
-            Patient ID
-        </th>
-        <th>
-            Admin ID
-        </th>
-        <th>
-            Appointment Date
-        </th>
-        <th>
-            Appointment Time
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Action
-        </th>
-    </thead>
-    <tbody>
-        {% for i in appointments_obj %}
-        <tr>
-            <td>
-                {{ i.appointment_id }}
-            </td>
-            <td>
-                {{ i.patient_id }}
-            </td>
-            <td>
-                {{ i.admin_id }}
-            </td>
-            <td>
-                {{ i.appointment_date }}
-            </td>
-            <td>
-                {{ i.appointment_time }}
-            </td>
-            <td>
-                {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
-            </td>
-            <td>
-                <button>Approve</button>
-                <button>Completed</button>
-                <button>Delete</button>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<select id="statusFilter">
+    <option value="" selected disabled>Choose an option</option>
+    <option value="all">All Data</option>
+    <option value="pending">Pending</option>
+    <option value="approved">Approved</option>
+    <option value="completed">Completed</option>
+  </select>
+  
+  <div id="tableContainer">
+    <table id="allTable" style="display: none;">
+        <thead>
+            <th>
+                Appointment ID
+            </th>
+            <th>
+                Patient ID
+            </th>
+            <th>
+                Admin ID
+            </th>
+            <th>
+                Appointment Date
+            </th>
+            <th>
+                Appointment Time
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Action
+            </th>
+        </thead>
+        <tbody>
+            {% for i in appointments_obj %}
+            <tr>
+                <td>
+                    {{ i.appointment_id }}
+                </td>
+                <td>
+                    {{ i.patient_id }}
+                </td>
+                <td>
+                    {{ i.admin_id }}
+                </td>
+                <td>
+                    {{ i.appointment_date }}
+                </td>
+                <td>
+                    {{ i.appointment_time }}
+                </td>
+                <td>
+                    {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
+                </td>
+                <td>
+                    {% if i.status==0 %}
+                    <a href="/admin-approve-appointment/{{ i.appointment_id }}">Approve</a>
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% elif i.status==1 %}
+                    <a href="/admin-complete-appointment/{{ i.appointment_id }}">Completed</a>
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% elif i.status==2 %}
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% else %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  
+    <table id="pending" style="display: none;">
+        <thead>
+            <th>
+                Appointment ID
+            </th>
+            <th>
+                Patient ID
+            </th>
+            <th>
+                Admin ID
+            </th>
+            <th>
+                Appointment Date
+            </th>
+            <th>
+                Appointment Time
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Action
+            </th>
+        </thead>
+        <tbody>
+            {% for i in pending_appointments_obj %}
+            <tr>
+                <td>
+                    {{ i.appointment_id }}
+                </td>
+                <td>
+                    {{ i.patient_id }}
+                </td>
+                <td>
+                    {{ i.admin_id }}
+                </td>
+                <td>
+                    {{ i.appointment_date }}
+                </td>
+                <td>
+                    {{ i.appointment_time }}
+                </td>
+                <td>
+                    {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
+                </td>
+                <td>
+                    {% if i.status==0 %}
+                    <a href="/admin-approve-appointment/{{ i.appointment_id }}">Approve</a>
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% elif i.status==1 %}
+                    <a href="/admin-complete-appointment/{{ i.appointment_id }}">Completed</a>
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% elif i.status==2 %}
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% else %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  
+    <table id="approved" style="display: none;">
+        <thead>
+            <th>
+                Appointment ID
+            </th>
+            <th>
+                Patient ID
+            </th>
+            <th>
+                Admin ID
+            </th>
+            <th>
+                Appointment Date
+            </th>
+            <th>
+                Appointment Time
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Action
+            </th>
+        </thead>
+        <tbody>
+            {% for i in approved_appointments_obj %}
+            <tr>
+                <td>
+                    {{ i.appointment_id }}
+                </td>
+                <td>
+                    {{ i.patient_id }}
+                </td>
+                <td>
+                    {{ i.admin_id }}
+                </td>
+                <td>
+                    {{ i.appointment_date }}
+                </td>
+                <td>
+                    {{ i.appointment_time }}
+                </td>
+                <td>
+                    {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
+                </td>
+                <td>
+                    {% if i.status==0 %}
+                    <a href="/admin-approve-appointment/{{ i.appointment_id }}">Approve</a>
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% elif i.status==1 %}
+                    <a href="/admin-complete-appointment/{{ i.appointment_id }}">Completed</a>
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% elif i.status==2 %}
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% else %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table id="completed" style="display: none;">
+        <thead>
+            <th>
+                Appointment ID
+            </th>
+            <th>
+                Patient ID
+            </th>
+            <th>
+                Admin ID
+            </th>
+            <th>
+                Appointment Date
+            </th>
+            <th>
+                Appointment Time
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Action
+            </th>
+        </thead>
+        <tbody>
+            {% for i in completed_appointments_obj %}
+            <tr>
+                <td>
+                    {{ i.appointment_id }}
+                </td>
+                <td>
+                    {{ i.patient_id }}
+                </td>
+                <td>
+                    {{ i.admin_id }}
+                </td>
+                <td>
+                    {{ i.appointment_date }}
+                </td>
+                <td>
+                    {{ i.appointment_time }}
+                </td>
+                <td>
+                    {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
+                </td>
+                <td>
+                    {% if i.status==0 %}
+                    <a href="/admin-approve-appointment/{{ i.appointment_id }}">Approve</a>
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% elif i.status==1 %}
+                    <a href="/admin-complete-appointment/{{ i.appointment_id }}">Completed</a>
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% elif i.status==2 %}
+                    <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                    {% else %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+<div>
+    
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        const statusFilter = document.getElementById('statusFilter');
+        const tableContainer = document.getElementById('tableContainer');
+        const allTable = document.getElementById('allTable');
+        const pendingTable = document.getElementById('pending');
+        const approvedTable = document.getElementById('approved');
+        const completedTable = document.getElementById('completed');
+
+        // Add event listener to the status filter dropdown
+        statusFilter.addEventListener('change', function() {
+            const selectedValue = statusFilter.value;
+
+            // Hide all tables
+            allTable.style.display = 'none';
+            pendingTable.style.display = 'none';
+            approvedTable.style.display = 'none';
+            completedTable.style.display = 'none';
+
+            // Show the table based on the selected value
+            if (selectedValue === 'all') {
+                allTable.style.display = 'table';
+            } else if (selectedValue === 'pending') {
+                pendingTable.style.display = 'table';
+            } else if (selectedValue === 'approved') {
+                approvedTable.style.display = 'table';
+            } else if (selectedValue === 'completed') {
+                completedTable.style.display = 'table';
+            }
+        });
+    });
+</script>

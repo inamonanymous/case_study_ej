@@ -19,10 +19,6 @@ class Admin(db.Model):
     admin_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    """firstname = db.Column(db.String(100), nullable=False)
-    lastname = db.Column(db.String(100), nullable=False)
-    contact_number = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(100), nullable=False)"""
     staff_id = db.Column(db.Integer, nullable=False)
 
     @classmethod
