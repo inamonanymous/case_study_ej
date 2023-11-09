@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from model import db, Patient, Appointments, Admin, Services, Staff
 from flask_migrate import Migrate
 from sqlalchemy import desc
+import json
 
 app = Flask(__name__)
 app.secret_key = "secret+key"
@@ -72,6 +73,17 @@ def client_page():
 @app.route('/admin-edit-staff/<int:id>', methods=['POST', 'GET'])
 def admin_edit_staff(id):
     if 'admin-username' in session:
+        data = request.get_json()
+        if not data:
+            return jsonify({"message": "null data"})
+        target_staff = Staff.query.filter_by(staff_id=id).first()
+        target_staff.firstname=data['firstname']
+        target_staff.lastname=data['lastname']
+        target_staff.position=data['position']
+        target_staff.contact_number=data['phone']
+        target_staff.email=data['email']
+        db.session.commit()
+        
         return jsonify({"message": request.get_json()})
     return redirect(url_for('index'))
 
@@ -80,14 +92,16 @@ def admin_delete_staff(id):
     if 'admin-username' in session:
         target_staff = Staff.query.filter_by(staff_id=id).first()
         target_admin = Admin.query.filter_by(staff_id=id).first()
+        if not target_admin and not target_staff:
+            return jsonify({"message": "staff not found"}), 413
         current_user = Admin.query.filter_by(username=session.get('admin-username', "")).first()
         current_staff = Staff.query.filter_by(staff_id=current_user.staff_id).first()
-        if (current_staff.position == 0 or current_staff.position == 1) and (not target_staff.position == 0):
+        if (current_staff.position == 0 or current_staff.position == 1) and (not target_staff.position == 0) :
             db.session.delete(target_staff)
             db.session.delete(target_admin)
             db.session.commit()
-            return redirect(url_for('admin_dashboard'))
-        return "failed to delete staff"
+            return jsonify({"message": "success"}), 200
+        return jsonify({"message": "cannot delete | position hierarchy not followed"}), 413
     return redirect(url_for('index'))
 
 @app.route('/admin-save-staff', methods=['POST'])

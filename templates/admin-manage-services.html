@@ -1,5 +1,19 @@
 <div>
-    <button>Add Service</button>
+    <button id="add-service-btn" onclick="addService()">Add Service</button>
+</div>
+<div id="add-service-form" style="display: none;">
+    <form action="">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title">
+        <br>
+        <label for="description">Description</label>
+        <textarea name="description" id="description" cols="30" rows="5"></textarea>
+        <br>
+        <label for="price">Price</label>
+        <input type="number" id="price" name="price">
+        <br>
+        <button type="submit">Save</button>
+    </form>
 </div>
 <div>
     <table>
@@ -16,6 +30,9 @@
             <th>
                 Service Price
             </th>
+            <th>
+                Action
+            </th>
         </thead>
         <tbody>
             {% for i in services_obj %}
@@ -24,8 +41,28 @@
                 <td><b>{{ i.service_title }}</b></td>
                 <td>{{ i.service_description }}</td>
                 <td>{{ i.service_price }}</td>
+                <td>
+                    <a href="">Edit</a>
+                    <a href="">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+<script>
+    function addService(){
+        const addServiceForm = document.getElementById("add-service-form");
+        const addServiceBtn = document.getElementById("add-service-btn")
+
+        if (addServiceBtn && addServiceForm){
+            if(addServiceForm.style.display==="none"){
+                addServiceForm.style.display="block";
+                addServiceBtn.innerHTML="Hide";
+            } else {
+                addServiceForm.style.display="none";
+                addServiceBtn.innerHTML="Add Service";
+            }
+        }
+    } 
+</script>

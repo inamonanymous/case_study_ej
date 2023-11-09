@@ -80,7 +80,7 @@
                 </td>
                 <td>
                     <a href="#" onclick="editUserForm({{ i.staff_id }})">Edit</a>
-                    <a href="/admin-delete-staff/{{ i.staff_id }}">Delete</a>
+                    <a href="#" onclick="confirmDelete({{ i.staff_id }})">Delete</a>
                 </td>
             </tr>
             {% endfor %}
@@ -89,7 +89,22 @@
 </div>
 
 <script>
-    
+    function confirmDelete(staff_id){
+        if(confirm("Are you sure you want to delete this staff?")){
+            axios.get(`/admin-delete-staff/${staff_id}`).then(function (response){
+                console.log(response.data.message);
+                if (response.status == 200){
+                    console.log(response.data)
+                    location.reload(true);
+                }
+            }).catch(error => {
+                console.log(error.response.data.message);
+                console.log(error);
+            });
+        }
+    }
+
+
     function editUserForm(staff_id){
         let user_entry = {};
 
@@ -119,7 +134,7 @@
                 .then(response => {
                     console.log(response.data);
                     document.getElementById("demo").innerHTML = "Form submitted successfully.";
-                })
+                }   )
                 .catch(error => {
                     console.error(error);
                 });
