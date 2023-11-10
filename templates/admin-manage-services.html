@@ -38,20 +38,64 @@
             {% for i in services_obj %}
             <tr>
                 <td>{{ i.service_id }}</td>
-                <td><b>{{ i.service_title }}</b></td>
-                <td>{{ i.service_description }}</td>
-                <td>{{ i.service_price }}</td>
+                <td id="default-cell-title-{{ i.service_id }}">{{ i.service_title }}</td>
+                <td id="default-cell-description-{{ i.service_id }}">{{ i.service_description }}</td>
+                <td id="default-cell-price-{{ i.service_id }}">{{ i.service_price }}</td>
                 <td>
-                    <a href="">Edit</a>
+                    <label for="editServiceCheckbox{{ i.service_id }}">Edit</label>
+                    <input type="checkbox" name="editServiceToggle" id="editServiceCheckbox{{ i.service_id }}" onclick="editServiceToggle({{ i.service_id }})">
                     <a href="#" onclick="deleteService({{ i.service_id }})">Delete</a>
-                </td>
-            </tr>
+                    <!-- Hidden Cells should be placed here, not nested inside another <td> -->
+                    </td>
+                </tr>
+                <!-- Hidden Cells for each service -->
+                <tr id="hidden-row-{{ i.service_id }}" style="display: none;">
+                    <td></td>
+                    <td><input type="text" id="input-title-{{ i.service_id }}" value="{{ i.service_title }}"></td>
+                    <td><input type="text" id="input-description-{{ i.service_id }}" value="{{ i.service_description }}"></td>
+                    <td><input type="text" id="input-price-{{ i.service_id }}" value="{{ i.service_price }}"></td>
+                    <td><button onclick="editService({{ i.service_id }})">Save</button></td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 
 <script>
+    function editService(id){
+        user_entry = {};
+        var input_fields = [
+            document.getElementById(`input-title-${id}`),
+            document.getElementById(`input-description-${id}`),
+            document.getElementById(`input-price-${id}`),
+        ]
+        for(let i=0;i<input_fields.length;i++){
+            user_entry[input_fields[i].id]= input_fields[i].value
+            console.log(user_entry)
+        }
+
+        axios.put(`/admin-edit-service/${id}`, user_entry).then(response => {
+            location.reload(true);
+            console.log(response.data);
+        }).catch(error => {
+            console.log(error)
+        });
+    }
+
+    function editServiceToggle(id){
+        var checkbox = document.getElementById(`editServiceCheckbox${id}`);
+        var hiddenRow = document.getElementById(`hidden-row-${id}`);
+        
+
+        if (checkbox.checked){
+            // Show the hidden row
+            hiddenRow.style.display = "table-row";
+        } else {
+            // Hide the hidden row
+            hiddenRow.style.display = "none";
+        }
+    }
+
     function addService(){
         const addServiceForm = document.getElementById("add-service-form");
         const addServiceBtn = document.getElementById("add-service-btn")

@@ -70,6 +70,18 @@ def client_page():
 
 #admin logic
 #-------------------------------------------------------------------------------------
+@app.route('/admin-edit-service/<int:id>', methods=['PUT'])
+def admin_edit_service(id):
+    if 'admin-username' in session:
+        target_service = Services.query.filter_by(service_id=id).first()
+        data = request.get_json()
+        target_service.service_title=data.get(f"input-title-{id}")
+        target_service.service_description=data.get(f"input-description-{id}")
+        target_service.service_price=data.get(f"input-price-{id}")
+        db.session.commit()
+        return jsonify(data)
+    return redirect(url_for('index'))
+
 @app.route('/admin-delete-service/<int:id>', methods=['DELETE'])
 def admin_delete_service(id):
     if 'admin-username' in session:
@@ -80,8 +92,6 @@ def admin_delete_service(id):
         db.session.commit()
         return jsonify({"message": "service deleted"}), 200
     return redirect(url_for('index'))
-
-
 
 @app.route('/admin-save-service', methods=['POST', 'GET'])
 def admin_save_sevice():
