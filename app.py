@@ -70,12 +70,48 @@ def client_page():
 
 #admin logic
 #-------------------------------------------------------------------------------------
+@app.route('/admin-delete-service/<int:id>', methods=['DELETE'])
+def admin_delete_service(id):
+    if 'admin-username' in session:
+        target_service = Services.query.filter_by(service_id=id).first()
+        if not target_service:
+            return redirect(url_for('index')), 401
+        db.session.delete(target_service)
+        db.session.commit()
+        return jsonify({"message": "service deleted"}), 200
+    return redirect(url_for('index'))
+
+
+
+@app.route('/admin-save-service', methods=['POST', 'GET'])
+def admin_save_sevice():
+    if 'admin-username' in session:
+        title, description, price = request.form['title'].strip(), request.form['description'], request.form['price'].strip()
+        check_service = Services.query.filter_by(service_title=title).first()
+        if check_service:
+            return "f"
+
+        service_entry = Services(
+            service_title=title,
+            service_description=description,
+            service_price=price
+        )
+        db.session.add(service_entry)
+        db.session.commit()
+        return redirect(url_for('admin_dashboard'))
+    return redirect(url_for('index'))
+
 @app.route('/admin-edit-staff/<int:id>', methods=['POST', 'GET'])
 def admin_edit_staff(id):
     if 'admin-username' in session:
         data = request.get_json()
         if not data:
             return jsonify({"message": "null data"})
+        current_user = Admin.query.filter_by(username=session.get('admin-username', "")).first()
+        if not current_user.position == 0 or current_user.position == 1:
+            if target_staff.position==0:
+                return jsonify({"message": "master user cannot be changed"})
+            return jsonify({"message": "hierarchy not followed"}), 401
         target_staff = Staff.query.filter_by(staff_id=id).first()
         target_staff.firstname=data['firstname']
         target_staff.lastname=data['lastname']
@@ -135,7 +171,7 @@ def admin_save_staff():
         return "f"
     return redirect(url_for('index'))
 
-@app.route('/admin-delete-appointment/<int:id>')
+@app.route('/admin-delete-appointment/<int:id>', methods=['DELETE'])
 def admin_delete_appointment(id):
     if 'admin-username' in session:
         target_appointment = Appointments.query.filter_by(appointment_id=id).first()
@@ -143,12 +179,12 @@ def admin_delete_appointment(id):
         if (target_appointment.status<=1 or target_appointment.status>=0) and current_admin:
             db.session.delete(target_appointment)
             db.session.commit()
-            return redirect(url_for('admin_dashboard'))
-        return "faileed"
+            return jsonify({"message": "appointment deleted"}), 201
+        return jsonify({"message": "failed"}), 401
     return redirect(url_for('index'))
 
 
-@app.route('/admin-complete-appointment/<int:id>')
+@app.route('/admin-complete-appointment/<int:id>', methods=['PUT'])
 def admin_complete_appointment(id):
     if 'admin-username' in session:
         target_appointment = Appointments.query.filter_by(appointment_id=id).first()
@@ -158,11 +194,11 @@ def admin_complete_appointment(id):
             target_appointment.admin_id=current_admin.admin_id
             db.session.add(target_appointment)
             db.session.commit()
-            return "success"
-        return "faileed"
+            return jsonify({"message": "appointment status set to completed"}), 201
+        return jsonify({"message": "failed"}), 401
     return redirect(url_for('index'))
 
-@app.route('/admin-approve-appointment/<int:id>')
+@app.route('/admin-approve-appointment/<int:id>', methods=['PUT'])
 def admin_approve_appointment(id):
     if 'admin-username' in session:
         target_appointment = Appointments.query.filter_by(appointment_id=id).first()
@@ -172,8 +208,8 @@ def admin_approve_appointment(id):
             target_appointment.admin_id=current_admin.admin_id
             db.session.add(target_appointment)
             db.session.commit()
-            return "success"
-        return "failed"
+            return jsonify({"message": "appointment status set to approved"}), 201
+        return jsonify({"message": "failed"}), 401
     return redirect(url_for('index'))
 
 @app.route('/admin-dashboard')
