@@ -1,11 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h1>Welcome to the Dental Information System</h1>
-    <p>Please select your role:</p>
-    <a href="/admin-login">
-        <button id="admin-button">Enter as Admin</button>
-    </a>
-    <a href="/client-page">
-        <button id="client-button">Enter as Client</button>
-    </a>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 text-center">
+            <h1>Welcome to the Dental Information System</h1>
+            <p>Please select your role:</p>
+            <a href="/admin-login" class="btn btn-primary btn-lg" role="button" id="admin-button">Enter as Admin</a>
+            <a href="/client-page" class="btn btn-success btn-lg" role="button" id="client-button">Enter as Client</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

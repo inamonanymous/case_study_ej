@@ -1,25 +1,71 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="services-container" id="client-services">
-    <h2>unidentified Dental Information System</h2>
-    <ul>
-        <li><a href="#" data-content-id="apointment-scheduling-content">Schedule an Appointment</a></li>
-        <li><a href="#" data-content-id="doctors-calendar-content">Doctor's Calendar</a></li>
-        <li><a href="#" data-content-id="medical-history-access-content">Medical History Access</a></li>
-    </ul>
-</div>
-
-<div id="content-container">
-    <div id="apointment-scheduling-content" style="display: none;">
-        {% include "patient-registration.html" %}
+<style>
+    body {
+      background-color: #f4f3ef;
+      color: #333;
+      font-family: 'Playfair Display', serif;
+    }
+    .services-container {
+      background-color: #eae7dc;
+      padding: 20px;
+      border-right: 2px solid #d3c1ae;
+    }
+    .services-container h2 {
+      font-family: 'Playfair Display', serif;
+      color: #6b705c;
+    }
+    .services-container ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .services-container ul li a {
+      color: #6b705c;
+      text-decoration: none;
+      font-size: 1.25rem;
+      display: block;
+      padding: 10px 0;
+    }
+    .services-container ul li a:hover {
+      color: #3a3a3a;
+      text-decoration: underline;
+    }
+    .content-container {
+      padding: 20px;
+      background-color: #eae7dc;
+    }
+    #content-container > div {
+      display: none; /* Hide all content by default */
+    }
+  </style>
+  
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="services-container" id="client-services">
+          <h2>unidentified Dental Information System</h2>
+          <ul class="nav flex-column">
+            <li class="nav-item"><a href="#" class="nav-link" data-content-id="apointment-scheduling-content">Schedule an Appointment</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" data-content-id="doctors-calendar-content">Doctor's Calendar</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" data-content-id="medical-history-access-content">Medical History Access</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div id="content-container">
+          <div id="apointment-scheduling-content" class="content-container">
+            {% include "patient-registration.html" %}
+          </div>
+          <div id="doctors-calendar-content" class="content-container">
+            {% include "doctors-appointments.html" %}
+          </div>
+          <div id="medical-history-access-content" class="content-container">
+            {% include "medical-history.html" %}
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="doctors-calendar-content" style="display: none;">
-        {% include "doctors-appointments.html" %}
-    </div>
-    <div id="medical-history-access-content" style="display: none;">
-        {% include "medical-history.html" %}
-    </div>
-</div>
+  </div>
 
 <script>
     let calendar = null

@@ -1,0 +1,215 @@
+{% extends "layout.html" %}
+{% block body %}
+<style>
+  .disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .input-group-text {
+    width: 2.375rem;
+  }
+</style>
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="toggle-admin" onchange="toggleDiv('admin-info')">
+        <label class="form-check-label" for="toggle-admin">Change Admin Information</label>
+      </div>
+      <div id="admin-info" class="disabled mt-3">
+        <form id="adminForm" action="/admin-update-credentials" method="put" onsubmit="submitAdminForm(event, {{ current_user.admin_id }})">
+          <div class="mb-3">
+            <label for="edit-username" class="form-label">Username</label>
+            <div class="input-group">
+              <input type="text" class="form-control" name="edit-username" id="edit-username" value="{{ current_user.username }}">
+              <span class="input-group-text">
+                <input class="form-check-input" type="checkbox" id="check-username" onclick="updateThisField(this)">
+              </span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="edit-password" class="form-label">Password</label>
+            <div class="input-group">
+              <input type="password" class="form-control" name="edit-password" id="edit-password" value="{{ current_user.password }}">
+              <span class="input-group-text">
+                <input class="form-check-input" type="checkbox" id="check-password" onclick="enablePasswordField(this)">
+              </span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="password2" class="form-label">Re-enter Password</label>
+            <input type="password" class="form-control" name="password2" id="password2" hidden value="{{ current_user.password }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Staff ID: {{ current_user.staff_id }}</label>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Admin Credentials</button>
+        </form>
+      </div>
+      
+      <div class="form-check form-switch mt-4">
+        <input class="form-check-input" type="checkbox" id="toggle-staff" onchange="toggleDiv('staff-info')">
+        <label class="form-check-label" for="toggle-staff">Change Staff Information</label>
+      </div>
+      <div id="staff-info" class="disabled mt-3">
+        <form id="staffForm" action="/admin-edit-staff/{{ current_staff.staff_id }}" method="post" onsubmit="submitStaffForm(event, {{ current_staff.staff_id }})">
+          <div class="mb-3">
+            <label for="edit-firstname" class="form-label">Firstname</label>
+            <div class="input-group">
+              <input type="text" class="form-control" name="edit-firstname" id="edit-firstname" value="{{ current_staff.firstname }}">
+              <span class="input-group-text">
+                <input class="form-check-input" type="checkbox" id="check-firstname" onclick="updateThisField(this)">
+              </span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="edit-lastname" class="form-label">Lastname</label>
+            <div class="input-group">
+              <input type="text" class="form-control" name="edit-lastname" id="edit-lastname" value="{{ current_staff.lastname }}">
+              <span class="input-group-text">
+                <input class="form-check-input" type="checkbox" id="check-lastname" onclick="updateThisField(this)">
+              </span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="edit-position" class="form-label">Position</label>
+            <div class="input-group">
+              <input type="number" class="form-control" name="edit-position" id="edit-position" value="{{ current_staff.position }}">
+              <span class="input-group-text">
+                <input class="form-check-input" type="checkbox" id="check-position" onclick="updateThisField(this)">
+              </span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="edit-phone" class="form-label">Contact Number</label>
+            <div class="input-group">
+              <input type="text" class="form-control" name="edit-phone" id="edit-phone" value="{{ current_staff.contact_number }}">
+              <span class="input-group-text">
+                <input class="form-check-input" type="checkbox" id="check-phone" onclick="updateThisField(this)">
+              </span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="edit-email" class="form-label">Email Address</label>
+            <div class="input-group">
+              <input type="email" class="form-control" name="edit-email" id="edit-email" value="{{ current_staff.email }}">
+              <span class="input-group-text">
+                <input class="form-check-input" type="checkbox" id="check-email" onclick="updateThisField(this)">
+              </span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Edit Staff Credentials</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    function toggleDiv(divId) {
+        var div = document.getElementById(divId);
+        var toggle = document.getElementById('toggle-' + divId.split('-')[0]);
+        div.classList.toggle('disabled', !toggle.checked);
+        var checkboxes = div.querySelectorAll("input[type='checkbox']");
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = false;
+            updateThisField(checkbox);
+        });
+    }
+
+    function enablePasswordField(checkbox){
+        var origPass = document.getElementById('edit-password');
+        var rePass = document.getElementById('password2');
+
+        if (checkbox.checked){
+            origPass.disabled = false;
+            rePass.disabled = false;
+            origPass.removeAttribute('hidden');
+            rePass.removeAttribute('hidden');
+        } else {
+            origPass.disabled = true;
+            rePass.disabled = true;
+            origPass.setAttribute('hidden', true);
+            rePass.setAttribute('hidden', true);
+        }
+    }
+
+    function updateThisField(checkbox) {
+        var inputFieldId = checkbox.id.replace('check-', 'edit-');
+        var inputField = document.getElementById(inputFieldId);
+
+        // Toggle the disabled state and visibility of the input field based on the checkbox state.
+        if (checkbox.checked) {
+            inputField.disabled = false;
+            inputField.removeAttribute('hidden');
+        } else {
+            inputField.disabled = true;
+            inputField.setAttribute('hidden', true);
+        }
+    }
+    function submitStaffForm(event, id) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Create an object to store form data
+      var formData = {};
+
+      // Get all form elements
+      var formElements = document.getElementById('staffForm').elements;
+
+      // Loop through form elements and add them to the formData object
+      for (var i = 0; i < formElements.length; i++) {
+        var element = formElements[i];
+        if (element.type !== 'checkbox' || element.checked) {
+          formData[element.name.replace("edit-", "")] = element.value;
+        }
+      }
+
+      // Convert the formData object to JSON string
+      var jsonString = JSON.stringify(formData);
+
+      // Log the JSON string (you can send it to the server in an AJAX request)
+      console.log(jsonString);
+      axios.post(`/admin-edit-staff/${id}`, formData).then(response => {
+        location.reload(true);
+        console.log(response.data);
+      }).catch(error => {
+        console.log(error)
+        console.log(id)
+      });
+    }
+
+    function submitAdminForm(event, id) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Create an object to store form data
+      var formData = {};
+
+      // Get all form elements
+      var formElements = document.getElementById('adminForm').elements;
+
+      // Loop through form elements and add them to the formData object
+      for (var i = 0; i < formElements.length; i++) {
+        var element = formElements[i];
+        if (element.type !== 'checkbox' || element.checked) {
+          formData[element.name.replace("edit-", "")] = element.value;
+        }
+      }
+
+      // Convert the formData object to JSON string
+      var jsonString = JSON.stringify(formData);
+
+      // Log the JSON string (you can send it to the server in an AJAX request)
+      console.log(jsonString);
+      axios.put(`/admin-edit-admin/${id}`, formData).then(response => {
+        location.reload(true);
+        console.log(response.data);
+      }).catch(error => {
+        console.log(error)
+        console.log(id)
+      });
+    }
+    
+</script>
+{% endblock %}

@@ -1,91 +1,88 @@
-<div>
-    <button id="add-staff-btn" onclick="addUserForm()">
-        Add Staff
-    </button>
-</div>
-<div id="add-staff-form" style="display: none;">
-    <form action="/admin-save-staff" method="post">
-        <label for="firstname">Firstname</label>
-        <input type="text" name="firstname" id="firstname">
-        <br>
-        <label for="lastname">Lastname</label>
-        <input type="text" name="lastname" id="lastname">
-        <br>
-        <label for="position">Position</label>
-        <select name="position" id="position">
-            <option value="-1" selected disabled>Select option</option>
-            <option value="0">Master</option>
-            <option value="1">Dentist</option>
-            <option value="2">Hygienist</option>
-            <option value="3">Receptionist</option>
-        </select>
-        <br>
-        <label for="phone">Contact Number</label>
-        <input type="text" name="phone" id="phone">
-        <br>
-        <label for="email">Email</label>
-        <input type="text" name="email" id="email">
-        <br>
-        <label for="username">Username</label>
-        <input type="username" name="username" id="username">
-        <br>
-        <button type="submit">Save</button>
-    </form>
-</div>
-<div>
-    <table>
-        <thead>
-            <th>
-                Staff ID
-            </th>
-            <th>
-                Firstname
-            </th>
-            <th>
-                Lastname
-            </th>
-            <th>
-                Position
-            </th>
-            <th>
-                Contact Number
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Action
-            </th>
-        </thead>
-        <tbody>
-            {% for i in staffs_obj %}
-            <tr>
-                <td>
-                    {{ i.staff_id }}
-                </td>
-                <td>
-                    {{ i.firstname }}
-                </td>
-                <td>
-                    {{ i.lastname }}
-                </td>
-                <td>
-                    {{ i.position }}
-                </td>
-                <td>
-                    {{ i.contact_number }}
-                </td>
-                <td>
-                    {{ i.email }}
-                </td>
-                <td>
-                    <a href="#" onclick="editUserForm({{ i.staff_id }})">Edit</a>
-                    <a href="#" onclick="confirmDelete({{ i.staff_id }})">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% extends "layout.html" %}
+{% block body %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12 mb-3">
+            <button id="add-staff-btn" class="btn btn-primary" onclick="addUserForm()">
+                Add Staff
+            </button>
+        </div>
+        <div class="col-12 mb-3">
+            <div id="add-staff-form" class="card" style="display: none;">
+                <div class="card-body">
+                    <h5 class="card-title">Add New Staff</h5>
+                    <form action="/admin-save-staff" method="post" class="row g-3">
+                        <div class="col-md-6">
+                            <label for="firstname" class="form-label">Firstname</label>
+                            <input type="text" class="form-control" name="firstname" id="firstname" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lastname" class="form-label">Lastname</label>
+                            <input type="text" class="form-control" name="lastname" id="lastname" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="position" class="form-label">Position</label>
+                            <select name="position" id="position" class="form-select" required>
+                                <option value="-1" selected disabled>Select option</option>
+                                <option value="0">Master</option>
+                                <option value="1">Dentist</option>
+                                <option value="2">Hygienist</option>
+                                <option value="3">Receptionist</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" name="phone" id="phone" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" id="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" name="username" id="username" required>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Staff ID</th>
+                            <th>Firstname</th>
+                            <th>Lastname</th>
+                            <th>Position</th>
+                            <th>Contact Number</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in staffs_obj %}
+                        <tr>
+                            <td>{{ i.staff_id }}</td>
+                            <td>{{ i.firstname }}</td>
+                            <td>{{ i.lastname }}</td>
+                            <td>{{ 'Master' if i.position == 0 else 'Dentist' if i.position == 1 else 'Hygienist' if i.position == 2 else 'Receptionist' if i.position == 3  else '' }}</td>
+                            <td>{{ i.contact_number }}</td>
+                            <td>{{ i.email }}</td>
+                            <td>
+                                <button class="btn btn-secondary btn-sm" onclick="editUserForm({{ i.staff_id }})">Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ i.staff_id }})">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -111,37 +108,51 @@
         let prompts = [
             { name: "firstname", message: "Please enter User's firstname" },
             { name: "lastname", message: "Please enter User's lastname" },
-            { name: "position", message: "Please enter User's position" },
+            { name: "position", message: "Please enter User's position | (0)-master, (1)-dentist, (2)-hygienist, (3)-receptionist |" },
             { name: "phone", message: "Please enter User's contact number" },
             { name: "email", message: "Please enter User's email" }
         ];
 
         let isValid = true;
+        let requestedData = [];
+        axios.get(`/admin-get-staff/${staff_id}`).then(response => {
+        let requestedData = [
+            response.data.firstname,
+            response.data.lastname,
+            response.data.position,
+            response.data.phone,
+            response.data.email
+        ];
+
+        let isValid = true;
 
         for (let i = 0; i < prompts.length; i++) {
-            let input = prompt(prompts[i].message);
-            if (input === null || input === "") {
+            let input = prompt(prompts[i].message, `${requestedData[i]}`);
+            if (input == null || input == "") {
                 isValid = false;
                 break;
             } else {
                 user_entry[prompts[i].name] = input;
             }
         }
-        console.log(user_entry);
+
         if (isValid) {
-            // Send the user_entry object to the Flask backend via Axios
             axios.post(`/admin-edit-staff/${staff_id}`, user_entry)
                 .then(response => {
                     console.log(response.data);
-                    document.getElementById("demo").innerHTML = "Form submitted successfully.";
-                }   )
+                    location.reload(true);
+                })
                 .catch(error => {
                     console.error(error);
                 });
         } else {
             document.getElementById("demo").innerHTML = "User cancelled the prompt or left a field empty.";
         }
-    }
+    }).catch(error => {
+        console.error(error);
+        // Handle error here, for example, show a message to the user
+    });
+}
 
     function addUserForm(){
         const addStaffForm = document.getElementById("add-staff-form");
@@ -161,3 +172,4 @@
         }
         }
 </script>
+{% endblock %}

@@ -1,64 +1,40 @@
-<table>
-    <thead>
-        <th>
-            Patient ID
-        </th>
-        <th>
-            Patient Firstname
-        </th>
-        <th>
-            Patient Lastname
-        </th>
-        <th>
-            Patient Age
-        </th>
-        <th>
-            Patient Gender
-        </th>
-        <th>
-            Patient Contact Number
-        </th>
-        <th>
-            Patient Email
-        </th>
-        <th>
-            Patient Address
-        </th>
-        <th>
-            Treatment
-        </th>
-    </thead>
-    <tbody>
-        {% for i in patients_obj %}
-        <tr>
-            <td>
-                {{ i.patient_id }}
-            </td>
-            <td>
-                {{ i.firstname }}
-            </td>
-            <td>
-                {{ i.lastname }}
-            </td>
-            <td>
-                {{ i.age }}
-            </td>
-            <td>
-                {{ i.gender }}
-            </td>
-            <td>
-                {{ i.contact_number }}
-            </td>
-            <td>
-                {{ i.email }}
-            </td>
-            <td>
-                {{ i.address }}
-            </td>
-            <td>
-                {{ i.treatment }}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% extends "layout.html" %}
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Patient Firstname</th>
+                        <th>Patient Lastname</th>
+                        <th>Patient Age</th>
+                        <th>Patient Gender</th>
+                        <th>Patient Contact Number</th>
+                        <th>Patient Email</th>
+                        <th>Patient Address</th>
+                        <th>Treatment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in patients_obj %}
+                    <tr>
+                        <td>{{ i.patient_id }}</td>
+                        <td>{{ i.firstname }}</td>
+                        <td>{{ i.lastname }}</td>
+                        <td>{{ i.age }}</td>
+                        <td>{{ i.gender }}</td>
+                        <td>{{ i.contact_number }}</td>
+                        <td>{{ i.email }}</td>
+                        <td>{{ i.address }}</td>
+                        <td>{{ i.treatment }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

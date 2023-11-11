@@ -56,6 +56,13 @@ def patient_registration():
     session['patient-id'] = patient_entry.patient_id
     return redirect(url_for('patient_schedule'))
 
+@app.route('/get-service-description/<int:id>')
+def get_service_description(id):
+    target_service = Services.query.filter_by(service_id=id).first()
+    if not target_service:
+        return jsonify({"message": "object not found"}), 401
+    return jsonify({"description": target_service.service_description}), 201
+
 @app.route('/client-page')
 def client_page():
     all_appointments = Appointments.query.order_by(desc(Appointments.appointment_id)).all()
@@ -111,26 +118,46 @@ def admin_save_sevice():
         return redirect(url_for('admin_dashboard'))
     return redirect(url_for('index'))
 
+@app.route('/admin-edit-admin/<int:id>', methods=['PUT', 'GET'])
+def admin_edit_admin(id):
+    if 'admin-username' in session:
+        data = request.get_json()
+        current_admin = Admin.query.filter_by(username=session.get('admin-username', "")).first()
+        current_staff = Staff.query.filter_by(staff_id=current_admin.staff_id).first()
+        target_admin = Admin.query.filter_by(admin_id=id).first()
+        if not data:
+            print(data)
+            return jsonify({"message": "null data"}), 401
+        if not (current_staff.position == 0 or current_staff.position == 1 or not current_admin.staff_id == id):
+            return jsonify({"message": "hierarchy not followed"}), 401
+        if not data['password'] == data['password2']:
+            return jsonify({"message": "password do not match"}), 401
+        target_admin.username=data['username']
+        target_admin.password=data['password']
+        db.session.commit()
+        return jsonify(data)
+    return redirect(url_for('index'))
+
 @app.route('/admin-edit-staff/<int:id>', methods=['POST', 'GET'])
 def admin_edit_staff(id):
     if 'admin-username' in session:
         data = request.get_json()
-        if not data:
-            return jsonify({"message": "null data"})
         current_user = Admin.query.filter_by(username=session.get('admin-username', "")).first()
-        if not current_user.position == 0 or current_user.position == 1:
-            if target_staff.position==0:
-                return jsonify({"message": "master user cannot be changed"})
-            return jsonify({"message": "hierarchy not followed"}), 401
+        current_staff = Staff.query.filter_by(staff_id=current_user.staff_id).first()
         target_staff = Staff.query.filter_by(staff_id=id).first()
+        if not data:
+            print(data)
+            return jsonify({"message": "null data"}), 401
+        if not (current_staff.position == 0 or current_staff.position == 1 or not current_user.staff_id == id):
+            return jsonify({"message": "hierarchy not followed"}), 401
         target_staff.firstname=data['firstname']
         target_staff.lastname=data['lastname']
         target_staff.position=data['position']
         target_staff.contact_number=data['phone']
         target_staff.email=data['email']
         db.session.commit()
-        
-        return jsonify({"message": request.get_json()})
+        print(data)
+        return jsonify({"message": request.get_json()}), 201
     return redirect(url_for('index'))
 
 @app.route('/admin-delete-staff/<int:id>')
@@ -142,12 +169,29 @@ def admin_delete_staff(id):
             return jsonify({"message": "staff not found"}), 413
         current_user = Admin.query.filter_by(username=session.get('admin-username', "")).first()
         current_staff = Staff.query.filter_by(staff_id=current_user.staff_id).first()
-        if (current_staff.position == 0 or current_staff.position == 1) and (not target_staff.position == 0) :
+        if (current_staff.position == 0 or current_staff.position == 1) and (not target_staff.position == 0):
             db.session.delete(target_staff)
             db.session.delete(target_admin)
             db.session.commit()
             return jsonify({"message": "success"}), 200
         return jsonify({"message": "cannot delete | position hierarchy not followed"}), 413
+    return redirect(url_for('index'))
+
+@app.route('/admin-get-staff/<int:id>')
+def admin_get_staff(id):
+    if 'admin-username' in session:
+        target_staff = Staff.query.filter_by(staff_id=id).first()
+        target_admin = Admin.query.filter_by(staff_id=id).first()
+        if not target_admin and not target_staff:
+            return jsonify({"message": "staff not found"}), 413
+        data = {
+            "firstname": target_staff.firstname,
+            "lastname": target_staff.lastname,
+            "position": target_staff.position,
+            "phone": target_staff.contact_number,
+            "email": target_staff.email,
+        }
+        return jsonify(data)
     return redirect(url_for('index'))
 
 @app.route('/admin-save-staff', methods=['POST'])

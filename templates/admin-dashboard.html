@@ -1,31 +1,39 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="services-container" id="client-services">
-    <h2>Welcome <span>{{ current_staff.firstname }} {{ current_staff.lastname }}</span></h2>
-    <ul>
-        <li><a href="#" data-content-id="manage-patients-content">Manage Patients</a></li>
-        <li><a href="#" data-content-id="manage-appointments-content">Manage Appointments</a></li>
-        <li><a href="#" data-content-id="manage-staff-content">Manage Staff</a></li>
-        <li><a href="#" data-content-id="manage-services-content">Manage Services</a></li>
-        <li><a href="#" data-content-id="system-settings-content">System Settings</a></li>
-    </ul>
-</div>
-
-<div id="content-container">
-    <div id="manage-patients-content" style="display: none;">
-        {% include "admin-manage-patients.html" %}
-    </div>
-    <div id="manage-appointments-content" style="display: none;">
-        {% include "admin-manage-appointments.html" %}
-    </div>
-    <div id="manage-staff-content" style="display: none;">
-        {% include "admin-manage-staff.html" %}
-    </div>
-    <div id="manage-services-content" style="display: none;">
-        {% include "admin-manage-services.html" %}
-    </div>
-    <div id="system-settings-content" style="display: none;">
-        {% include "admin-system-settings.html" %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="services-container" id="client-services">
+                <h2>Welcome <span>{{ current_staff.firstname }} {{ current_staff.lastname }}</span></h2>
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="#" data-content-id="manage-patients-content">Manage Patients</a></li>
+                    <li class="list-group-item"><a href="#" data-content-id="manage-appointments-content">Manage Appointments</a></li>
+                    <li class="list-group-item"><a href="#" data-content-id="manage-staff-content">Manage Staff</a></li>
+                    <li class="list-group-item"><a href="#" data-content-id="manage-services-content">Manage Services</a></li>
+                    <li class="list-group-item"><a href="#" data-content-id="account-settings-content">Account Settings</a></li>
+                </ul>
+                <li class="list-group-item"><a href="{{ url_for('.index') }}">Logout</a></li>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div id="content-container">
+                <div id="manage-patients-content" style="display: none;">
+                    {% include "admin-manage-patients.html" %}
+                </div>
+                <div id="manage-appointments-content" style="display: none;">
+                    {% include "admin-manage-appointments.html" %}
+                </div>
+                <div id="manage-staff-content" style="display: none;">
+                    {% include "admin-manage-staff.html" %}
+                </div>
+                <div id="manage-services-content" style="display: none;">
+                    {% include "admin-manage-services.html" %}
+                </div>
+                <div id="account-settings-content" style="display: none;">
+                    {% include "admin-account-settings.html" %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
