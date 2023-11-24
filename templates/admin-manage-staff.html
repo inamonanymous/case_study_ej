@@ -1,6 +1,5 @@
-{% extends "layout.html" %}
-{% block body %}
 <div class="container-fluid mt-3">
+    <h2>Staff Management</h2>
     <div class="row">
         <div class="col-12 mb-3">
             <button id="add-staff-btn" class="btn btn-primary" onclick="addUserForm()">
@@ -73,8 +72,8 @@
                             <td>{{ i.contact_number }}</td>
                             <td>{{ i.email }}</td>
                             <td>
-                                <button class="btn btn-secondary btn-sm" onclick="editUserForm({{ i.staff_id }})">Edit</button>
-                                <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ i.staff_id }})">Delete</button>
+                                <a href="#"  onclick="editUserForm({{ i.staff_id }})"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a href="#"  onclick="confirmDelete({{ i.staff_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -172,4 +171,3 @@
         }
         }
 </script>
-{% endblock %}

@@ -1,5 +1,3 @@
-{% extends "layout.html" %}
-{% block body %}
 <style>
   .disabled {
     opacity: 0.6;
@@ -11,6 +9,7 @@
 </style>
 
 <div class="container mt-4">
+  <h2>Settings</h2>
   <div class="card">
     <div class="card-body">
       <div class="form-check form-switch">
@@ -69,15 +68,6 @@
               <input type="text" class="form-control" name="edit-lastname" id="edit-lastname" value="{{ current_staff.lastname }}">
               <span class="input-group-text">
                 <input class="form-check-input" type="checkbox" id="check-lastname" onclick="updateThisField(this)">
-              </span>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label for="edit-position" class="form-label">Position</label>
-            <div class="input-group">
-              <input type="number" class="form-control" name="edit-position" id="edit-position" value="{{ current_staff.position }}">
-              <span class="input-group-text">
-                <input class="form-check-input" type="checkbox" id="check-position" onclick="updateThisField(this)">
               </span>
             </div>
           </div>
@@ -212,4 +202,3 @@
     }
     
 </script>
-{% endblock %}

@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from model import db, Patient, Appointments, Admin, Services, Staff
 from flask_migrate import Migrate
 from sqlalchemy import desc
-import json
+from mailer import sendMessage
+import datetime
 
 app = Flask(__name__)
 app.secret_key = "secret+key"
@@ -16,9 +17,14 @@ def schedule_appointment():
         current_patient = Patient.query.filter_by(patient_id=session.get('patient-id')).first()
         if current_patient:
             date, time = request.form['date'], request.form['time']
-            appointment_obj = Appointments.query.filter_by(appointment_date=date, status=1).first()
-            if appointment_obj:
-                return "schedule different date"
+            timestamp_str = f"{date} {time}"
+            timestamp = datetime.datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M")
+            appointment_obj = Appointments.query.filter_by(appointment_date=timestamp.date(), status=1).first()
+            if appointment_obj or timestamp < datetime.datetime.today():
+                return """  <script>
+                                alert("Please make sure the date is not on Doctors Calendar or ahead of the current date");
+                                window.location.href="/patient-schedule";
+                            </script>"""
             appointment_entry = Appointments(
                 patient_id=current_patient.patient_id,
                 admin_id=None,
@@ -28,7 +34,12 @@ def schedule_appointment():
             )
             db.session.add(appointment_entry)
             db.session.commit()
-            return f"appointment sent to admin {appointment_entry}"
+            return """  <script>
+                            alert("Apointment added, kindly wait for the doctors response through your email or contact number for approval, Thank you!");
+                            window.location.href="/client-page";
+                        </script>"""
+            
+        
         return redirect(url_for('client_page'))
     return redirect(url_for('client_page'))
 
@@ -106,7 +117,11 @@ def admin_save_sevice():
         title, description, price = request.form['title'].strip(), request.form['description'], request.form['price'].strip()
         check_service = Services.query.filter_by(service_title=title).first()
         if check_service:
-            return "f"
+            return """      <script>
+                                alert("Cannot add existing Service");
+                                window.location.href="/admin-dashboard";
+                            </script>
+                    """
 
         service_entry = Services(
             service_title=title,
@@ -134,7 +149,9 @@ def admin_edit_admin(id):
             return jsonify({"message": "password do not match"}), 401
         target_admin.username=data['username']
         target_admin.password=data['password']
+        session['admin-username'] = target_admin.username
         db.session.commit()
+
         return jsonify(data)
     return redirect(url_for('index'))
 
@@ -146,7 +163,6 @@ def admin_edit_staff(id):
         current_staff = Staff.query.filter_by(staff_id=current_user.staff_id).first()
         target_staff = Staff.query.filter_by(staff_id=id).first()
         if not data:
-            print(data)
             return jsonify({"message": "null data"}), 401
         if not (current_staff.position == 0 or current_staff.position == 1 or not current_user.staff_id == id):
             return jsonify({"message": "hierarchy not followed"}), 401
@@ -256,8 +272,12 @@ def admin_complete_appointment(id):
 def admin_approve_appointment(id):
     if 'admin-username' in session:
         target_appointment = Appointments.query.filter_by(appointment_id=id).first()
+        if target_appointment is None: 
+            return jsonify({"message": "not found"}), 401    
         current_admin = Admin.query.filter_by(username=session.get('admin-username', "")).first()
         if target_appointment.status==0 and current_admin:
+            current_patient = Patient.query.filter_by(patient_id=target_appointment.patient_id).first()
+            sendMessage(current_patient, target_appointment.appointment_date, target_appointment.appointment_time)
             target_appointment.status=1
             target_appointment.admin_id=current_admin.admin_id
             db.session.add(target_appointment)
@@ -320,9 +340,9 @@ def appointments_api():
     # Convert them to the JSON structure expected by FullCalendar
     appointments_json = [
         {
-            'title': f'Appointment with ID {appointment.appointment_id}',
+            'title': f'Appointment with ID {appointment.appointment_date}',
             'start': f'{appointment.appointment_date}T{appointment.appointment_time}',
-            'url': f'/appointment/{appointment.appointment_id}',
+        
             # any other event properties...
         }
         for appointment in approved_appointments  # Assume approved_appointments is a list of appointments

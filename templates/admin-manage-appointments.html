@@ -1,8 +1,5 @@
-{% extends "layout.html" %}
-{% block body %}
-
 <div class="container mt-5">
-    <h1>Appointment Management</h1>
+    <h2>Appointment Management</h2>
     <div class="col-12">
         <div class="row">
             <select id="statusFilter" class="form-select mb-3">
@@ -64,13 +61,13 @@
                                     </td>
                                     <td>
                                         {% if i.status==0 %}
-                                        <a href="/admin-approve-appointment/{{ i.appointment_id }}">Approve</a>
-                                        <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                                        <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
+                                        <a href="" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==1 %}
-                                        <a href="/admin-complete-appointment/{{ i.appointment_id }}">Completed</a>
-                                        <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                                        <a href="#" onclick="completeAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-bookmark"></span></a>
+                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==2 %}
-                                        <a href="/admin-delete-appointment/{{ i.appointment_id }}">Delete</a>
+                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% else %}
                                         {% endif %}
                                     </td>
@@ -126,13 +123,13 @@
                                     </td>
                                     <td>
                                         {% if i.status==0 %}
-                                        <a href="#" onclick="approveAppointment({{ i.appointment_id }})">Approve</a>
-                                        <a href="#" onclick="deleteAppointment({{ i.id }})">Delete</a>
+                                        <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
+                                        <a href="#" onclick="deleteAppointment({{ i.id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==1 %}
-                                        <a href="#" onclick="completeAppointment({{ i.appointment_id }})">Complete</a>
-                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})">Delete</a>
+                                        <a href="#" onclick="completeAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-bookmark"></span></a>
+                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==2 %}
-                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})">Delete</a>
+                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% else %}
                                         {% endif %}
                                     </td>
@@ -188,13 +185,13 @@
                                     </td>
                                     <td>
                                         {% if i.status==0 %}
-                                        <a href="#" onclick="approveAppointment({{ i.appointment_id }})">Approve</a>
-                                        <a href="#" onclick="deleteAppointment({{ i.id }})">Delete</a>
+                                        <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
+                                        <a href="#" onclick="deleteAppointment({{ i.id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==1 %}
-                                        <a href="#" onclick="completeAppointment({{ i.appointment_id }})">Complete</a>
-                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})">Delete</a>
+                                        <a href="#" onclick="completeAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-bookmark"></span></a>
+                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==2 %}
-                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})">Delete</a>
+                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% else %}
                                         {% endif %}
                                     </td>
@@ -250,13 +247,13 @@
                                     </td>
                                     <td>
                                         {% if i.status==0 %}
-                                        <a href="#" onclick="approveAppointment({{ i.appointment_id }})">Approve</a>
-                                        <a href="#" onclick="deleteAppointment({{ i.id }})">Delete</a>
+                                        <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
+                                        <a href="#" onclick="deleteAppointment({{ i.id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==1 %}
-                                        <a href="#" onclick="completeAppointment({{ i.appointment_id }})">Complete</a>
-                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})">Delete</a>
+                                        <a href="#" onclick="completeAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-bookmark"></span></a>
+                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==2 %}
-                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})">Delete</a>
+                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% else %}
                                         {% endif %}
                                     </td>
@@ -343,5 +340,3 @@
     }
 
 </script>
-
-{% endblock %}

@@ -1,6 +1,111 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="container mt-5">
+<style>
+    body {
+        font-family: 'Helvetica', sans-serif;
+        background-color: #f8f9fa;
+        color: #495057;
+    }
+
+    .container {
+        margin-top: 50px;
+    }
+
+    .services-container {
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 20px;
+    }
+
+    h2 span {
+        color: #007bff;
+    }
+
+    .list-group {
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .list-group-item {
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .list-group-item a {
+        text-decoration: none;
+        color: #495057;
+        display: block;
+        padding: 10px 15px;
+        border-radius: 5px;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .list-group-item a.logout-link {
+        background-color: #dc3545;
+        color: #ffffff;
+    }
+
+    .list-group-item a.logout-link:hover {
+        background-color: #c82333;
+    }
+
+    #content-container {
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+    .table-responsive {
+            overflow: auto;
+            max-height: 400px; 
+    }
+
+    .table th, .table td {
+        width: 120px; /* Example width, adjust as needed */
+        overflow: hidden; /* Ensures content doesn't spill out */
+        text-overflow: ellipsis; /* Adds an ellipsis for overflow text */
+        white-space: nowrap; /* Keeps content on a single line */
+    }
+    .table th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .table tr:hover {
+        background-color: #ddd;
+    }
+
+    .table {
+        overflow-x: auto;
+        max-height: 200px;
+    }
+
+    .table::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    .table::-webkit-scrollbar-thumb {
+        background: #888; 
+        border-radius: 10px;
+    }
+
+    .table::-webkit-scrollbar-thumb:hover {
+        background: #555; 
+    }
+</style>
+
+
+<div class="container">
     <div class="row">
         <div class="col-md-4">
             <div class="services-container" id="client-services">
@@ -11,8 +116,10 @@
                     <li class="list-group-item"><a href="#" data-content-id="manage-staff-content">Manage Staff</a></li>
                     <li class="list-group-item"><a href="#" data-content-id="manage-services-content">Manage Services</a></li>
                     <li class="list-group-item"><a href="#" data-content-id="account-settings-content">Account Settings</a></li>
+                    <li class="list-group-item special-item" onclick="logoutLink()" id="logout-link">
+                        <a href="{{ url_for('.index') }}" class="logout-link">Logout</a>
+                    </li>
                 </ul>
-                <li class="list-group-item"><a href="{{ url_for('.index') }}">Logout</a></li>
             </div>
         </div>
         <div class="col-md-8">
@@ -36,11 +143,37 @@
         </div>
     </div>
 </div>
-
 <script>
+    // Assuming you have an element with ID 'sidebar' for your sidebar
+    const sidebar = document.getElementById("sidebar");
     const contentContainer = document.getElementById("content-container");
     const serviceLinks = document.querySelectorAll(".services-container ul li a");
-    
+
+    function logoutLink(){
+        const logoutLink = document.getElementById('logout-link');
+        logoutLink.addEventListener("click", function (e){
+            if (confirm("Are you sure you want to logout?")){
+                window.location.href="/";
+            }else{
+                
+            }
+        })
+
+    }
+
+    function toggleListItems() {
+        const servicesContainer = document.getElementById("client-services");
+        const items = servicesContainer.querySelectorAll(".list-group-item");
+
+        items.forEach(item => {
+            if (sidebar.classList.contains("hidden")) {
+                item.setAttribute("hidden", true);
+            } else {
+                item.removeAttribute("hidden");
+            }
+        });
+    }
+
     serviceLinks.forEach(link => {
         link.addEventListener("click", function (e) {
             e.preventDefault();
