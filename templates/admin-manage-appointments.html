@@ -1,5 +1,27 @@
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy4Ck0AeFWEb5I9pZl/GfEUnLJgT0MqO4" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" integrity="sha384-6NEeDZvF6AHdUkKC9J0uU+Q3BQFXNzFT+JAgPuQl4PqriGp/JPhXum0hU1unSWh3" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy4Ck0AeFWEb5I9pZl/GfEUnLJgT0MqO4" crossorigin="anonymous"></script>
+
 <div class="container mt-5">
     <h2>Appointment Management</h2>
+    <div class="modal fade" id="patientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Patient Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="patientModalBody">
+                    <!-- Display patient information here -->
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-12">
         <div class="row">
             <select id="statusFilter" class="form-select mb-3">
@@ -45,7 +67,7 @@
                                         {{ i.appointment_id }}
                                     </td>
                                     <td>
-                                        {{ i.patient_id }}
+                                        <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
                                     </td>
                                     <td>
                                         {{ i.admin_id }}
@@ -60,6 +82,7 @@
                                         {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
                                     </td>
                                     <td>
+                                        <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         {% if i.status==0 %}
                                         <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
                                         <a href="" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
@@ -107,7 +130,7 @@
                                         {{ i.appointment_id }}
                                     </td>
                                     <td>
-                                        {{ i.patient_id }}
+                                        <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
                                     </td>
                                     <td>
                                         {{ i.admin_id }}
@@ -122,6 +145,7 @@
                                         {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
                                     </td>
                                     <td>
+                                        <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         {% if i.status==0 %}
                                         <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
                                         <a href="#" onclick="deleteAppointment({{ i.id }})"><span class="glyphicon glyphicon-trash"></span></a>
@@ -169,7 +193,7 @@
                                         {{ i.appointment_id }}
                                     </td>
                                     <td>
-                                        {{ i.patient_id }}
+                                        <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
                                     </td>
                                     <td>
                                         {{ i.admin_id }}
@@ -184,6 +208,7 @@
                                         {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
                                     </td>
                                     <td>
+                                        <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         {% if i.status==0 %}
                                         <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
                                         <a href="#" onclick="deleteAppointment({{ i.id }})"><span class="glyphicon glyphicon-trash"></span></a>
@@ -231,7 +256,7 @@
                                         {{ i.appointment_id }}
                                     </td>
                                     <td>
-                                        {{ i.patient_id }}
+                                        <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
                                     </td>
                                     <td>
                                         {{ i.admin_id }}
@@ -246,6 +271,7 @@
                                         {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
                                     </td>
                                     <td>
+                                        <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         {% if i.status==0 %}
                                         <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
                                         <a href="#" onclick="deleteAppointment({{ i.id }})"><span class="glyphicon glyphicon-trash"></span></a>
@@ -267,6 +293,7 @@
         </div>
     </div>
 </div>
+
 
 
 <script>
@@ -339,4 +366,34 @@
         } else {}
     }
 
+
+    function viewPatient(id) {
+            axios.get(`patient/${id}`)
+                .then(response => {
+                    // Assuming response.data is the patient object
+                    const patient = response.data;
+
+                    // Create HTML content for the modal body
+                    const modalBodyContent = `
+                        First Name: ${patient.firstname}
+                        Last Name: ${patient.lastname}
+                        Age: ${patient.age}
+                        Gender: ${patient.gender}
+                        Contact Number: ${patient.contact_number}
+                        Email: ${patient.email}
+                        Address: ${patient.address}
+                        Treatment: ${patient.treatment}
+                    `;
+
+                    // Set modal body content
+                    alert(modalBodyContent);
+                })
+                .catch(error => {
+                    alert("Patient already deleted, You may now delete this one as well");
+                    console.log(error);
+                });
+        }
+    
+
 </script>
+

@@ -1,15 +1,24 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from model import db, Patient, Appointments, Admin, Services, Staff
-from flask_migrate import Migrate
 from sqlalchemy import desc
 from mailer import sendMessage
 import datetime
 
 app = Flask(__name__)
 app.secret_key = "secret+key"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/dentistry'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost:3306/dentistry'
 db.init_app(app)
-migrate = Migrate(app, db)
+
+@app.route('/delete-patient/<int:id>', methods=['DELETE', 'GET'])
+def delete_patient(id):
+    if 'admin-username' in session:
+        target_patient = Patient.query.filter_by(patient_id=id).first()
+        if not (target_patient):
+            return jsonify({"message": "patient or appointment not found"}), 401
+        db.session.delete(target_patient)
+        db.session.commit()
+        return jsonify({"message": "patient deleted"}), 201
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/schedule-appointment', methods=['POST', 'GET'])
 def schedule_appointment():
@@ -151,8 +160,24 @@ def admin_edit_admin(id):
         target_admin.password=data['password']
         session['admin-username'] = target_admin.username
         db.session.commit()
+        return jsonify(data), 201
+    return redirect(url_for('index'))
 
-        return jsonify(data)
+@app.route('/admin-edit-current-staff', methods=['POST', 'GET'])
+def admin_edit_current_staff():
+    if 'admin-username' in session:
+        data = request.get_json()
+        current_user = Admin.query.filter_by(username=session.get('admin-username', "")).first()
+        target_staff = Staff.query.filter_by(staff_id=current_user.staff_id).first()
+        if not data:
+            return jsonify({"message": "null data"})
+        target_staff.firstname=data['firstname']
+        target_staff.lastname=data['lastname']
+        target_staff.contact_number=data['phone']
+        target_staff.email=data['email']
+        db.session.commit()
+        print(data)
+        return jsonify({"message": data}), 201
     return redirect(url_for('index'))
 
 @app.route('/admin-edit-staff/<int:id>', methods=['POST', 'GET'])
@@ -173,7 +198,7 @@ def admin_edit_staff(id):
         target_staff.email=data['email']
         db.session.commit()
         print(data)
-        return jsonify({"message": request.get_json()}), 201
+        return jsonify({"message": data}), 201
     return redirect(url_for('index'))
 
 @app.route('/admin-delete-staff/<int:id>')
@@ -237,8 +262,18 @@ def admin_save_staff():
             db.session.add(admin_entry)
             db.session.commit()
 
-            return f"success {staff_entry.firstname} -- {admin_entry.username}"
-        return "f"
+            return f"""
+                    <script>
+                        alert("Staff saved successfully! New Staff's Username: {username.strip()} | Password: {lastname.strip()}");
+                        window.location.href="/admin-dashboard";
+                    </script>
+                    """
+        return f"""
+                    <script>
+                        alert("Hirarchy not followed, Staff saved unsuccessfully!");
+                        location.reload(true);
+                    </script>
+                    """
     return redirect(url_for('index'))
 
 @app.route('/admin-delete-appointment/<int:id>', methods=['DELETE'])
@@ -291,7 +326,24 @@ def admin_dashboard():
     if 'admin-username' in session:
         current_user = Admin.query.filter_by(username=session.get('admin-username', "")).first()
         current_staff = Staff.query.filter_by(staff_id=current_user.staff_id).first()
-        patients_obj = Patient.query.all()
+        patients_obj = Patient.query.order_by(desc(Patient.patient_id)).all()
+        patients_services_join = (
+                                    Patient.query
+                                    .outerjoin(Services, Services.service_id == Patient.treatment)
+                                    .order_by(desc(Patient.patient_id))
+                                    .with_entities(
+                                        Patient.patient_id,
+                                        Patient.firstname,
+                                        Patient.lastname,
+                                        Patient.age,
+                                        Patient.gender,
+                                        Patient.contact_number,
+                                        Patient.email,
+                                        Patient.address,
+                                        Services.service_title
+                                    )
+                                    .all()
+                                )
         appointments_obj = Appointments.query.order_by(desc(Appointments.appointment_id)).all()
         pending_appointments_obj = Appointments.query.filter_by(status=0).order_by(desc(Appointments.appointment_id)).all()
         approved_appointments_obj = Appointments.query.filter_by(status=1).order_by(desc(Appointments.appointment_id)).all()
@@ -308,7 +360,8 @@ def admin_dashboard():
                                 approved_appointments_obj=approved_appointments_obj,
                                 completed_appointments_obj=completed_appointments_obj,
                                 staffs_obj=staffs_obj,
-                                services_obj=services_obj)
+                                services_obj=services_obj,
+                                patients_services_join=patients_services_join)
     return redirect(url_for('index'))
 
 @app.route('/admin-auth', methods=['POST', 'GET'])
@@ -328,10 +381,39 @@ def admin_login():
 
 #api logic
 #-------------------------------------------------------------------------------------
-@app.route('/appointment/<int:appointment_id>')
-def view_appointment(appointment_id):
-    appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
-    return f"{appointment.appointment_date}"
+@app.route('/patient/<int:id>')
+def view_patient(id):
+    if 'admin-username' in session:
+        patient = (
+                    Patient.query
+                    .outerjoin(Services, Services.service_id == Patient.treatment)
+                    .order_by(desc(Patient.patient_id))
+                    .with_entities(
+                        Patient.patient_id,
+                        Patient.firstname,
+                        Patient.lastname,
+                        Patient.age,
+                        Patient.gender,
+                        Patient.contact_number,
+                        Patient.email,
+                        Patient.address,
+                        Services.service_title
+                    )
+                    .filter_by(patient_id=id)
+                    .first()
+                )
+        data = {
+            "firstname": patient.firstname,
+            "lastname": patient.lastname,
+            "age": patient.age,
+            "gender": patient.gender,
+            "contact_number": patient.contact_number,
+            "email": patient.email,
+            "address": patient.address,
+            "treatment": patient.service_title
+        }
+        return jsonify(data)
+    return "<script>alert('RESTRICTED ACCESS');window.location.href='/';</script>"
 
 @app.route("/api/appointments")
 def appointments_api():
@@ -356,4 +438,4 @@ def index():
     return render_template('index.html')
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",debug=True)
+    app.run(host="0.0.0.0", port="5000", debug=True)

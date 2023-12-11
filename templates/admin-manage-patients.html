@@ -8,26 +8,21 @@
                         <th>Patient ID</th>
                         <th>Patient Firstname</th>
                         <th>Patient Lastname</th>
-                        <th>Patient Age</th>
-                        <th>Patient Gender</th>
-                        <th>Patient Contact Number</th>
-                        <th>Patient Email</th>
-                        <th>Patient Address</th>
                         <th>Treatment</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in patients_obj %}
+                    {% for i in patients_services_join %}
                     <tr>
                         <td>{{ i.patient_id }}</td>
                         <td>{{ i.firstname }}</td>
                         <td>{{ i.lastname }}</td>
-                        <td>{{ i.age }}</td>
-                        <td>{{ i.gender }}</td>
-                        <td>{{ i.contact_number }}</td>
-                        <td>{{ i.email }}</td>
-                        <td>{{ i.address }}</td>
-                        <td>{{ i.treatment }}</td>
+                        <td>{{ i.service_title }}</td>
+                        <td>
+                            <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')"><span class="glyphicon glyphicon-eye-open"></span></a>
+                            <a href="javascript:void(0);" onclick="deletePatient('{{ i.patient_id }}')"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -35,4 +30,44 @@
         </div>
     </div>
 </div>
+<script>
+    function deletePatient(id){
+        axios.delete(`delete-patient/${id}`).then(response => {
+            if (confirm("Are you sure you want to delete this Patient?") && response.status===201){
+                alert("Patient deleted successfully!");
+                location.reload(true);
+            } else {
+                alert("Patient unsuccessfully deleted !");
+            }
+        })
+    }
 
+    function viewPatient(id) {
+        axios.get(`patient/${id}`)
+            .then(response => {
+                // Assuming response.data is the patient object
+                const patient = response.data;
+    
+                // Create HTML content for the modal body
+                const modalBodyContent = `
+                    <p><strong>First Name:</strong> ${patient.firstname}</p>
+                    <p><strong>Last Name:</strong> ${patient.lastname}</p>
+                    <p><strong>Age:</strong> ${patient.age}</p>
+                    <p><strong>Gender:</strong> ${patient.gender}</p>
+                    <p><strong>Contact Number:</strong> ${patient.contact_number}</p>
+                    <p><strong>Email:</strong> ${patient.email}</p>
+                    <p><strong>Address:</strong> ${patient.address}</p>
+                    <p><strong>Treatment:</strong> ${patient.treatment}</p>
+                `;
+    
+                // Set modal body content
+                $('#patientModalBody').html(modalBodyContent);
+    
+                // Show the modal
+                $('#patientModal').modal('show');
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+    </script>

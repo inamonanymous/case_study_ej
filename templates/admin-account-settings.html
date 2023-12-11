@@ -17,7 +17,7 @@
         <label class="form-check-label" for="toggle-admin">Change Admin Information</label>
       </div>
       <div id="admin-info" class="disabled mt-3">
-        <form id="adminForm" action="/admin-update-credentials" method="put" onsubmit="submitAdminForm(event, {{ current_user.admin_id }})">
+        <form id="adminForm" action="/admin-update-credentials" method="put" onsubmit="submitAdminForm(event, '{{ current_user.admin_id }}')">
           <div class="mb-3">
             <label for="edit-username" class="form-label">Username</label>
             <div class="input-group">
@@ -52,7 +52,7 @@
         <label class="form-check-label" for="toggle-staff">Change Staff Information</label>
       </div>
       <div id="staff-info" class="disabled mt-3">
-        <form id="staffForm" action="/admin-edit-staff/{{ current_staff.staff_id }}" method="post" onsubmit="submitStaffForm(event, {{ current_staff.staff_id }})">
+        <form id="staffForm" action="/admin-edit-current-staff" method="post" onsubmit="submitStaffForm(event, '{{ current_staff.staff_id }}')">
           <div class="mb-3">
             <label for="edit-firstname" class="form-label">Firstname</label>
             <div class="input-group">
@@ -161,9 +161,14 @@
 
       // Log the JSON string (you can send it to the server in an AJAX request)
       console.log(jsonString);
-      axios.post(`/admin-edit-staff/${id}`, formData).then(response => {
-        location.reload(true);
+      axios.post(`/admin-edit-current-staff`, formData).then(response => {
         console.log(response.data);
+        if (response.status === 201){
+          alert("Staff successfully Edited");
+          location.reload(true);
+        } else {
+          alert(response.message);
+        }
       }).catch(error => {
         console.log(error)
         console.log(id)
@@ -193,8 +198,12 @@
       // Log the JSON string (you can send it to the server in an AJAX request)
       console.log(jsonString);
       axios.put(`/admin-edit-admin/${id}`, formData).then(response => {
-        location.reload(true);
-        console.log(response.data);
+        if (response.status === 201){
+          alert("Admin successfully Edited");
+          location.reload(true);
+        } else {
+          alert(response.message);
+        }
       }).catch(error => {
         console.log(error)
         console.log(id)

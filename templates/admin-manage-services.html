@@ -110,9 +110,11 @@
         }
 
         axios.put(`/admin-edit-service/${id}`, user_entry).then(response => {
+            alert("Service edited successfully");
             location.reload(true);
             console.log(response.data);
         }).catch(error => {
+            alert("Service edited unsuccessfully");
             console.log(error)
         });
     }
