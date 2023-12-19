@@ -1,0 +1,82 @@
+<mxfile host="app.diagrams.net" modified="2023-12-19T13:00:00.150Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" etag="NjatyFR8UkLrhe1ig7Z7" version="22.1.11" type="device">
+  <diagram name="Page-1" id="UAQxEmX66kPiUknaZtt9">
+    <mxGraphModel dx="1321" dy="650" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dGaCogjdvlQQcep3Wvas-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-1" target="dGaCogjdvlQQcep3Wvas-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-1" value="Client" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="170" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-2" target="dGaCogjdvlQQcep3Wvas-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-2" value="Create Account" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-4" target="dGaCogjdvlQQcep3Wvas-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-4" value="Set Account to Unverified" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-6" target="dGaCogjdvlQQcep3Wvas-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-6" value="Browse to Page" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-8" target="dGaCogjdvlQQcep3Wvas-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-8" value="Create Appointment&lt;br&gt;Request" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-10" value="Wait for Approval" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="460" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-13" target="dGaCogjdvlQQcep3Wvas-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-13" value="Admin" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="560" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-14" target="dGaCogjdvlQQcep3Wvas-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-14" value="Approve Request" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="570" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-18" target="dGaCogjdvlQQcep3Wvas-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-18" target="dGaCogjdvlQQcep3Wvas-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-18" value="Client Showed&lt;br&gt;up on&lt;br&gt;Appointment Date ?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="670" width="140" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-20" target="dGaCogjdvlQQcep3Wvas-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-20" value="Send Request to&amp;nbsp;&lt;br&gt;Pending" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="570" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dGaCogjdvlQQcep3Wvas-22" target="dGaCogjdvlQQcep3Wvas-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-22" value="Wait until actual Appointment Date" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="710" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-25" value="Set Patient Account&amp;nbsp;&lt;br&gt;to Verified" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="930" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dGaCogjdvlQQcep3Wvas-27" value="Send email to account then dispose it from database" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="710" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

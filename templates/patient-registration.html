@@ -49,48 +49,14 @@
 }
 
 </style>
-<script>
-   function enablePatientDetails(selectElement) {
-    const patientDetailsSection = document.getElementById('patient-details-section');
-    const serviceDescription = document.getElementById('get-service-description');
-    // Make sure to check the 'value' of the selectElement, not just its presence
-    if (selectElement.value && selectElement.value !== '') {
-        // Show the patient details section
-        fetchServiceDetails(selectElement.value, details => {
-            patientDetailsSection.style.display = 'block';
-            serviceDescription.innerHTML=details.description;
-            console.log(details);
-        })
-    } else {
-        // Hide the patient details section if no service is selected
-        patientDetailsSection.style.display = 'none';
-    }
-}
-function fetchServiceDetails(id, callback) {
-    axios.get(`/get-service-description/${id}`).then(response => {
-        callback(response.data);
-    }).catch(error => {
 
-    });
-}
-</script>
 <div class="container mt-5">
     <div class="row">
         <div class="col-lg-8 offset-lg-2">
             <h2 class="mb-4">Registration Form</h2>
             <form action="/patient-registration" method="post" id="registration-form">
-                <div class="mb-3">
-                    <label for="services" class="form-label"><h3>Select a Treatment:</h3></label>
-                    <select id="services" name="treatment" class="form-select" onchange="enablePatientDetails(this)">
-                        <option selected disabled>Choose a Service</option>
-                        {% for i in services %}
-                        <option value="{{ i.service_id }}">{{ i.service_title }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
                 <!-- Patient Details Section -->
-                <div class="form-section" id="patient-details-section" style="display: none;">
+                <div class="form-section" id="patient-details-section">
                     <p id="get-service-description"></p>
                     <h2>Patient Details</h2>
                     <div class="mb-3">
@@ -125,6 +91,11 @@ function fetchServiceDetails(id, callback) {
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address:</label>
                         <input type="text" class="form-control" id="email" name="email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
                     </div>
 
                     <div class="mb-3">

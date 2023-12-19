@@ -3,11 +3,24 @@ from model import db, Patient, Appointments, Admin, Services, Staff
 from sqlalchemy import desc
 from mailer import sendMessage
 import datetime
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.secret_key = "secret+key"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost:3306/dentistry'
 db.init_app(app)
+Migrate(app, db)
+
+@app.route('/client-signin', methods=['POST'])
+def client_signin():
+    email, password = request.form['email'], request.form['password']
+    if Patient.login_is_true(email, password):
+        session['patient-email'] = email
+        print(0)
+        return redirect(url_for('client_page'))
+    print(1)
+    return redirect(url_for('client_page'))
+    
 
 @app.route('/delete-patient/<int:id>', methods=['DELETE', 'GET'])
 def delete_patient(id):
@@ -22,45 +35,44 @@ def delete_patient(id):
 
 @app.route('/schedule-appointment', methods=['POST', 'GET'])
 def schedule_appointment():
-    if 'patient-id' in session:
-        current_patient = Patient.query.filter_by(patient_id=session.get('patient-id')).first()
-        if current_patient:
-            date, time = request.form['date'], request.form['time']
-            timestamp_str = f"{date} {time}"
-            timestamp = datetime.datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M")
-            appointment_obj = Appointments.query.filter_by(appointment_date=timestamp.date(), status=1).first()
-            if appointment_obj or timestamp < datetime.datetime.today():
-                return """  <script>
-                                alert("Please make sure the date is not on Doctors Calendar or ahead of the current date");
-                                window.location.href="/patient-schedule";
-                            </script>"""
-            appointment_entry = Appointments(
-                patient_id=current_patient.patient_id,
-                admin_id=None,
-                appointment_date=date,
-                appointment_time=time,
-                status=0
-            )
-            db.session.add(appointment_entry)
-            db.session.commit()
+    current_patient = Patient.query.filter_by(patient_id=session.get('patient-id')).first()
+    if current_patient:
+        date, time = request.form['date'], request.form['time']
+        timestamp_str = f"{date} {time}"
+        timestamp = datetime.datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M")
+        appointment_obj = Appointments.query.filter_by(appointment_date=timestamp.date(), status=1).first()
+        if appointment_obj or timestamp < datetime.datetime.today():
             return """  <script>
-                            alert("Apointment added, kindly wait for the doctors response through your email or contact number for approval, Thank you!");
-                            window.location.href="/client-page";
+                            alert("Please make sure the date is not on Doctors Calendar or ahead of the current date");
+                            window.location.href="/patient-schedule";
                         </script>"""
-            
+        appointment_entry = Appointments(
+            patient_id=current_patient.patient_id,
+            admin_id=None,
+            appointment_date=date,
+            appointment_time=time,
+            status=0
+        )
+        db.session.add(appointment_entry)
+        db.session.commit()
+        return """  <script>
+                        alert("Apointment added, kindly wait for the doctors response through your email or contact number for approval, Thank you!");
+                        window.location.href="/client-page";
+                    </script>"""
         
-        return redirect(url_for('client_page'))
-    return redirect(url_for('client_page'))
+    return """  
+                <script>
+                    alert("Please Log in First");
+                    window.location.href="/client-page";
+                </script>"""
+    
+@app.route('/registration-page', methods=['GET'])
+def registration_page():
+    return render_template('patient-registration.html')
 
-@app.route('/patient-schedule/')
-def patient_schedule():
-    if 'patient-id' in session:
-        return render_template('schedule-appointment.html')
-    return redirect(url_for('client_page'))
-        
 @app.route('/patient-registration', methods=['POST', 'GET'])
 def patient_registration():
-    treatment, firstname, lastname, age, gender, phone, email, address = request.form['treatment'], request.form['firstname'], request.form['lastname'], request.form['age'], request.form['gender'], request.form['phone'], request.form['email'], request.form['address'], 
+    treatment, firstname, lastname, age, gender, phone, email, address, password = request.form['treatment'], request.form['firstname'], request.form['lastname'], request.form['age'], request.form['gender'], request.form['phone'], request.form['email'], request.form['address'], request.form['password']
     patient_entry = Patient(
         firstname=firstname,
         lastname=lastname,
@@ -69,12 +81,17 @@ def patient_registration():
         contact_number=phone,
         email=email,
         address=address,
-        treatment=treatment
+        treatment=treatment,
+        password=password
     )
     db.session.add(patient_entry)
     db.session.commit()
-    session['patient-id'] = patient_entry.patient_id
-    return redirect(url_for('patient_schedule'))
+    return f"""
+            <script>
+                alert("Patient Registered");
+                history.back();
+            </script>
+            """
 
 @app.route('/get-service-description/<int:id>')
 def get_service_description(id):
@@ -89,7 +106,16 @@ def client_page():
     approved_appointments = Appointments.query.filter_by(status=1).all()
     completed_appointments = Appointments.query.filter_by(status=2).all()
     services = Services.query.all()
+    if 'patient-email' in session:
+        current_patient = Patient.query.filter_by(email=session.get('patient-email', "")).first()
+        return render_template('client-page.html',
+                                current_patient=current_patient,
+                                all_appointments=all_appointments, 
+                                approved_appointments=approved_appointments,
+                                completed_appointments=completed_appointments,
+                                services=services)
     return render_template('client-page.html',
+                            current_patient=None,
                             all_appointments=all_appointments, 
                             approved_appointments=approved_appointments,
                             completed_appointments=completed_appointments,

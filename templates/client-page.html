@@ -38,6 +38,26 @@
     #content-container > div {
       display: none; /* Hide all content by default */
     }
+    #loginModal {
+      display: none;
+      margin-top: 10%;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+  }
+
+#loginModal-backdrop {
+    background-color: rgba(0, 0, 0, 0.886);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 50%;
+}
+
+    
+    
   </style>
   
   <div class="container mt-4">
@@ -45,6 +65,12 @@
       <div class="col-md-3">
         <div class="services-container" id="client-services">
           <h2>unidentified Dental Information System</h2>
+          {% if current_patient is not none %}
+            <h3>Hello {{ current_patient.email }}</h3>
+          {% else %}
+            <h4>Not Signed in</h4>
+            <a href="#" onclick="showLogInModal(this)">Click here to sign in!</a>
+          {% endif %}
           <ul class="nav flex-column">
             <li class="nav-item"><a href="#" class="nav-link" data-content-id="apointment-scheduling-content">Schedule an Appointment</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-content-id="doctors-calendar-content">Doctor's Calendar</a></li>
@@ -55,7 +81,7 @@
       <div class="col-md-9">
         <div id="content-container">
           <div id="apointment-scheduling-content" class="content-container">
-            {% include "patient-registration.html" %}
+            {% include "schedule-appointment.html" %}
           </div>
           <div id="doctors-calendar-content" class="content-container">
             {% include "doctors-appointments.html" %}
@@ -67,6 +93,56 @@
       </div>
     </div>
   </div>
+  
+  <div class="modal" id="loginModal" style="display: none;">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Login</h4>
+                <button type="button" class="close" onclick="closeLogInModal()">&times;</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form action="/client-signin" method="post" class="needs-validation" novalidate>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="text" class="form-control" name="email" id="email" required>
+                        <div class="invalid-feedback">Please enter your email.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" name="password" id="password" required>
+                        <div class="invalid-feedback">Please enter your password.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Log in</button>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <a href="/registration-page">Not Registered yet? Create a new account here!</a>
+            </div>
+
+        </div>
+    </div>
+  </div>
+
+
+
+<script>
+    function showLogInModal() {
+        var modal = document.getElementById("loginModal");
+        modal.style.display = 'block';
+   
+    }
+
+      function closeLogInModal() {
+        var modal = document.getElementById("loginModal");
+        modal.style.display = 'none';
+    }
+
+</script>
 
 <script>
     let calendar = null

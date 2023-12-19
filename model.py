@@ -8,11 +8,18 @@ class Patient(db.Model):
     firstname = db.Column(db.String(100), nullable=False)
     lastname = db.Column(db.String(100), nullable=False)
     age = db.Column(db.Integer, nullable=False)
-    gender = db.Column(db.SmallInteger, nullable=False)
+    gender = db.Column(db.String(7), nullable=False)
     contact_number = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False, unique=True)
     address = db.Column(db.String(100), nullable=False)
     treatment = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    is_verified = db.Column(db.Boolean, default=0)
+
+    @classmethod
+    def login_is_true(cls, email, password):
+        patient_obj = cls.query.filter_by(email=email).first()
+        return patient_obj and patient_obj.password == password
 
 class Admin(db.Model):
     __tablename__ = 'admin'
