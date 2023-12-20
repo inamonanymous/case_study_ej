@@ -11,16 +11,19 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost:3306/dentistry'
 db.init_app(app)
 Migrate(app, db)
 
+@app.route('/client-signout', methods=['GET'])
+def client_signout():
+    session.clear()
+    return redirect(url_for('client_page'))
+    
+    
 @app.route('/client-signin', methods=['POST'])
 def client_signin():
     email, password = request.form['email'], request.form['password']
     if Patient.login_is_true(email, password):
         session['patient-email'] = email
-        print(0)
         return redirect(url_for('client_page'))
-    print(1)
     return redirect(url_for('client_page'))
-    
 
 @app.route('/delete-patient/<int:id>', methods=['DELETE', 'GET'])
 def delete_patient(id):
@@ -35,7 +38,7 @@ def delete_patient(id):
 
 @app.route('/schedule-appointment', methods=['POST', 'GET'])
 def schedule_appointment():
-    current_patient = Patient.query.filter_by(patient_id=session.get('patient-id')).first()
+    current_patient = Patient.query.filter_by(email=session.get('patient-email', "")).first()
     if current_patient:
         date, time = request.form['date'], request.form['time']
         timestamp_str = f"{date} {time}"
@@ -45,7 +48,7 @@ def schedule_appointment():
             return """  <script>
                             alert("Please make sure the date is not on Doctors Calendar or ahead of the current date");
                             window.location.href="/patient-schedule";
-                        </script>"""
+                         </script>"""
         appointment_entry = Appointments(
             patient_id=current_patient.patient_id,
             admin_id=None,
@@ -63,7 +66,7 @@ def schedule_appointment():
     return """  
                 <script>
                     alert("Please Log in First");
-                    window.location.href="/client-page";
+                    history.back();
                 </script>"""
     
 @app.route('/registration-page', methods=['GET'])
@@ -72,7 +75,23 @@ def registration_page():
 
 @app.route('/patient-registration', methods=['POST', 'GET'])
 def patient_registration():
-    treatment, firstname, lastname, age, gender, phone, email, address, password = request.form['treatment'], request.form['firstname'], request.form['lastname'], request.form['age'], request.form['gender'], request.form['phone'], request.form['email'], request.form['address'], request.form['password']
+    firstname, lastname, age, gender, phone, email, address, password, password2 = request.form['firstname'].strip(), request.form['lastname'].strip(), request.form['age'].strip(), request.form['gender'].strip(), request.form['phone'].strip(), request.form['email'].strip(), request.form['address'].strip(), request.form['password'].strip(), request.form['password2'].strip()
+    check_patient = Patient.query.filter_by(email=email).first()
+    if check_patient:
+        return f"""
+            <script>
+                alert("Email already Registered");
+                history.back();
+            </script>
+            """    
+    if password!=password2:
+        return f"""
+            <script>
+                alert("Password doesn't match!");
+                history.back();
+            </script>
+            """    
+
     patient_entry = Patient(
         firstname=firstname,
         lastname=lastname,
@@ -81,15 +100,14 @@ def patient_registration():
         contact_number=phone,
         email=email,
         address=address,
-        treatment=treatment,
         password=password
     )
     db.session.add(patient_entry)
     db.session.commit()
     return f"""
             <script>
-                alert("Patient Registered");
-                history.back();
+                alert("Patient successfully Registered!");
+                window.location.href='/client-page';
             </script>
             """
 
@@ -98,6 +116,7 @@ def get_service_description(id):
     target_service = Services.query.filter_by(service_id=id).first()
     if not target_service:
         return jsonify({"message": "object not found"}), 401
+    
     return jsonify({"description": target_service.service_description}), 201
 
 @app.route('/client-page')
@@ -108,15 +127,16 @@ def client_page():
     services = Services.query.all()
     if 'patient-email' in session:
         current_patient = Patient.query.filter_by(email=session.get('patient-email', "")).first()
+        current_patient_history = Appointments.query.filter_by(patient_id=current_patient.patient_id).all()
         return render_template('client-page.html',
                                 current_patient=current_patient,
-                                all_appointments=all_appointments, 
+                                all_appointments=current_patient_history, 
                                 approved_appointments=approved_appointments,
                                 completed_appointments=completed_appointments,
                                 services=services)
     return render_template('client-page.html',
                             current_patient=None,
-                            all_appointments=all_appointments, 
+                            all_appointments=None, 
                             approved_appointments=approved_appointments,
                             completed_appointments=completed_appointments,
                             services=services)
@@ -315,15 +335,20 @@ def admin_delete_appointment(id):
     return redirect(url_for('index'))
 
 
-@app.route('/admin-complete-appointment/<int:id>', methods=['PUT'])
-def admin_complete_appointment(id):
+@app.route('/admin-complete-appointment/', methods=['PUT'])
+def admin_complete_appointment():
     if 'admin-username' in session:
+        data = request.get_json()
+        id = data['id']
+        service = data['service']
         target_appointment = Appointments.query.filter_by(appointment_id=id).first()
         current_admin = Admin.query.filter_by(username=session.get('admin-username', "")).first()
+        target_patient = Patient.query.filter_by(patient_id=target_appointment.patient_id).first()
         if target_appointment.status==1 and current_admin:
             target_appointment.status=2
             target_appointment.admin_id=current_admin.admin_id
-            db.session.add(target_appointment)
+            target_appointment.service_id=service
+            target_patient.is_verified=1
             db.session.commit()
             return jsonify({"message": "appointment status set to completed"}), 201
         return jsonify({"message": "failed"}), 401
@@ -341,7 +366,6 @@ def admin_approve_appointment(id):
             sendMessage(current_patient, target_appointment.appointment_date, target_appointment.appointment_time)
             target_appointment.status=1
             target_appointment.admin_id=current_admin.admin_id
-            db.session.add(target_appointment)
             db.session.commit()
             return jsonify({"message": "appointment status set to approved"}), 201
         return jsonify({"message": "failed"}), 401
@@ -353,23 +377,6 @@ def admin_dashboard():
         current_user = Admin.query.filter_by(username=session.get('admin-username', "")).first()
         current_staff = Staff.query.filter_by(staff_id=current_user.staff_id).first()
         patients_obj = Patient.query.order_by(desc(Patient.patient_id)).all()
-        patients_services_join = (
-                                    Patient.query
-                                    .outerjoin(Services, Services.service_id == Patient.treatment)
-                                    .order_by(desc(Patient.patient_id))
-                                    .with_entities(
-                                        Patient.patient_id,
-                                        Patient.firstname,
-                                        Patient.lastname,
-                                        Patient.age,
-                                        Patient.gender,
-                                        Patient.contact_number,
-                                        Patient.email,
-                                        Patient.address,
-                                        Services.service_title
-                                    )
-                                    .all()
-                                )
         appointments_obj = Appointments.query.order_by(desc(Appointments.appointment_id)).all()
         pending_appointments_obj = Appointments.query.filter_by(status=0).order_by(desc(Appointments.appointment_id)).all()
         approved_appointments_obj = Appointments.query.filter_by(status=1).order_by(desc(Appointments.appointment_id)).all()
@@ -386,8 +393,8 @@ def admin_dashboard():
                                 approved_appointments_obj=approved_appointments_obj,
                                 completed_appointments_obj=completed_appointments_obj,
                                 staffs_obj=staffs_obj,
-                                services_obj=services_obj,
-                                patients_services_join=patients_services_join)
+                                services_obj=services_obj
+                                )
     return redirect(url_for('index'))
 
 @app.route('/admin-auth', methods=['POST', 'GET'])
@@ -410,24 +417,7 @@ def admin_login():
 @app.route('/patient/<int:id>')
 def view_patient(id):
     if 'admin-username' in session:
-        patient = (
-                    Patient.query
-                    .outerjoin(Services, Services.service_id == Patient.treatment)
-                    .order_by(desc(Patient.patient_id))
-                    .with_entities(
-                        Patient.patient_id,
-                        Patient.firstname,
-                        Patient.lastname,
-                        Patient.age,
-                        Patient.gender,
-                        Patient.contact_number,
-                        Patient.email,
-                        Patient.address,
-                        Services.service_title
-                    )
-                    .filter_by(patient_id=id)
-                    .first()
-                )
+        patient = Patient.query.filter_by(patient_id=id).first()
         data = {
             "firstname": patient.firstname,
             "lastname": patient.lastname,
@@ -436,7 +426,7 @@ def view_patient(id):
             "contact_number": patient.contact_number,
             "email": patient.email,
             "address": patient.address,
-            "treatment": patient.service_title
+            "is_verified": patient.is_verified
         }
         return jsonify(data)
     return "<script>alert('RESTRICTED ACCESS');window.location.href='/';</script>"

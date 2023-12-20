@@ -67,9 +67,11 @@
           <h2>unidentified Dental Information System</h2>
           {% if current_patient is not none %}
             <h3>Hello {{ current_patient.email }}</h3>
+            <p>{{ 'Verified' if current_patient.is_verified else 'Unverified'}} Account</p>
+            <a href="#" onclick="clientSignOut()">Sign out</a>
           {% else %}
             <h4>Not Signed in</h4>
-            <a href="#" onclick="showLogInModal(this)">Click here to sign in!</a>
+            <a href="#" onclick="showLogInModal()">Click here to sign in!</a>
           {% endif %}
           <ul class="nav flex-column">
             <li class="nav-item"><a href="#" class="nav-link" data-content-id="apointment-scheduling-content">Schedule an Appointment</a></li>
@@ -131,6 +133,12 @@
 
 
 <script>
+    function clientSignOut() {
+      if (confirm("You sure you want to Sign Out?")){
+        window.location.href='/client-signout';
+      }
+    }
+
     function showLogInModal() {
         var modal = document.getElementById("loginModal");
         modal.style.display = 'block';

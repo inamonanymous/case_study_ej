@@ -8,17 +8,15 @@
                         <th>Patient ID</th>
                         <th>Patient Firstname</th>
                         <th>Patient Lastname</th>
-                        <th>Treatment</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in patients_services_join %}
+                    {% for i in patients_obj %}
                     <tr>
                         <td>{{ i.patient_id }}</td>
                         <td>{{ i.firstname }}</td>
                         <td>{{ i.lastname }}</td>
-                        <td>{{ i.service_title }}</td>
                         <td>
                             <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')"><span class="glyphicon glyphicon-eye-open"></span></a>
                             <a href="javascript:void(0);" onclick="deletePatient('{{ i.patient_id }}')"><span class="glyphicon glyphicon-trash"></span></a>
@@ -57,7 +55,6 @@
                     <p><strong>Contact Number:</strong> ${patient.contact_number}</p>
                     <p><strong>Email:</strong> ${patient.email}</p>
                     <p><strong>Address:</strong> ${patient.address}</p>
-                    <p><strong>Treatment:</strong> ${patient.treatment}</p>
                 `;
     
                 // Set modal body content

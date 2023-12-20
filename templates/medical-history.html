@@ -18,15 +18,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for i in all_appointments %}
-                            <tr>
-                                <td>{{ i.appointment_id }}</td>
-                                <td>{{ i.patient_id }}</td>
-                                <td>{{ i.appointment_date }}</td>
-                                <td>{{ i.appointment_time }}</td>
-                                <td>{{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}</td>
-                            </tr>
-                        {% endfor %}
+                        {% if all_appointments is not none %}
+                            {% for i in all_appointments %}
+                                <tr>
+                                    <td>{{ i.appointment_id }}</td>
+                                    <td>{{ i.patient_id }}</td>
+                                    <td>{{ i.appointment_date }}</td>
+                                    <td>{{ i.appointment_time }}</td>
+                                    <td>{{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr></tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>

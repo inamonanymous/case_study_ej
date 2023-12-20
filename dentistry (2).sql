@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 16, 2023 at 01:36 AM
+-- Generation Time: Dec 20, 2023 at 01:25 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -56,7 +56,7 @@ CREATE TABLE `alembic_version` (
 --
 
 INSERT INTO `alembic_version` (`version_num`) VALUES
-('52257ec9a7dd');
+('d19e4a0a985a');
 
 -- --------------------------------------------------------
 
@@ -70,20 +70,19 @@ CREATE TABLE `appointments` (
   `admin_id` int(11) DEFAULT NULL,
   `appointment_date` date NOT NULL,
   `appointment_time` time NOT NULL,
-  `status` smallint(6) DEFAULT NULL COMMENT '0-pending, 1-approved, 2-completed'
+  `status` smallint(6) DEFAULT NULL COMMENT '0-pending, 1-approved, 2-completed',
+  `service_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `appointments`
 --
 
-INSERT INTO `appointments` (`appointment_id`, `patient_id`, `admin_id`, `appointment_date`, `appointment_time`, `status`) VALUES
-(9, 14, 2, '2023-12-26', '08:30:00', 1),
-(10, 15, 2, '2023-12-27', '08:30:00', 1),
-(11, 15, 2, '2023-12-29', '08:30:00', 1),
-(14, 17, 5, '2023-11-10', '08:30:00', 2),
-(15, 18, 5, '2023-12-21', '08:07:00', 1),
-(16, 19, 5, '2023-12-21', '08:30:00', 1);
+INSERT INTO `appointments` (`appointment_id`, `patient_id`, `admin_id`, `appointment_date`, `appointment_time`, `status`, `service_id`) VALUES
+(26, 36, 5, '2023-12-23', '17:35:00', 2, 11),
+(27, 36, 5, '2023-12-30', '19:16:00', 2, 15),
+(28, 37, 5, '2024-01-06', '19:40:00', 2, 15),
+(29, 37, NULL, '2023-12-30', '19:46:00', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -96,37 +95,21 @@ CREATE TABLE `patient` (
   `firstname` varchar(100) NOT NULL,
   `lastname` varchar(100) NOT NULL,
   `age` int(11) NOT NULL,
-  `gender` smallint(6) NOT NULL,
+  `gender` varchar(7) NOT NULL,
   `contact_number` varchar(20) NOT NULL,
   `email` varchar(100) NOT NULL,
   `address` varchar(100) NOT NULL,
-  `treatment` varchar(100) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `is_verified` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`patient_id`, `firstname`, `lastname`, `age`, `gender`, `contact_number`, `email`, `address`, `treatment`) VALUES
-(1, 'Steph', 'qwe', 1, 0, 'asdfasdf', '11', '11', 'Dental Cleanings'),
-(2, 'Steph', 'qwe', 1, 0, 'asdfasdf', '11', '11', 'Dental Cleanings'),
-(3, 'Steph', 'qwqwe', 1, 0, '123', '123', '123', 'X-rays'),
-(4, 'Steph', 'Aguilar', 21, 0, '9566046626', 'asdfhaskf@email.com', 'dasdfdfa', 'Emergency Dental Care'),
-(5, 'Paanot', 'sadjfh', 123, 0, '129308129', 'qjehqw@gmail.com', 'asddd', 'Dental Examinations'),
-(6, 'Steph', 'Marlboro', 21, 0, '9566046626', 'stephenonline25@gmail.com', 'unidentified', 'Preventive Education'),
-(7, 'Steph', 'Marlboro', 21, 0, '9566046626', 'stephenonline25@gmail.com', 'unidentified', 'Preventive Education'),
-(8, 'Steph', 'Marlboro', 21, 0, '9566046626', 'stephenonline25@gmail.com', 'unidentified', 'Preventive Education'),
-(9, 'Steph', 'qwe', 12, 0, '123', '123', '123', 'Emergency Dental Care'),
-(10, 'q', 'q', 11, 0, '123', '123', '123', 'Dental Examinations'),
-(11, 'q', 'q', 11, 0, '12312', 'qweqw', 'qwe', 'Dental Examinations'),
-(12, 'q', 'q', 11, 0, '12312', 'qweqw', 'qwe', 'Dental Examinations'),
-(13, 'Steph', 'qwqwe', 1, 0, '1213', '12312', '3123123', 'hello'),
-(14, 'Stephq', 'q', 123, 0, '213', 'qqweqw', '213', 'helloworld'),
-(15, 'q', 'q', 111, 0, 'q', 'q', 'q', 'Fillings Treatment for dental cavities involving the removal of decayed tooth material and filling t'),
-(16, 'q', 'q', 123, 0, 'q', 'q', 'q', 'Fillings'),
-(17, 'Steph', 'Marlboro', 23, 0, '12313213', 'asdds@gmail.com', 'qweqwe', 'Dental Examinations'),
-(18, 'Paanot', 'sadjfh', 21, 0, '11', '11', '11', 'Cosmetic Dentistry'),
-(19, 'Exampple', 'Example', 11, 0, 'example', 'example', 'example', '13');
+INSERT INTO `patient` (`patient_id`, `firstname`, `lastname`, `age`, `gender`, `contact_number`, `email`, `address`, `password`, `is_verified`) VALUES
+(36, 'Earl', 'Dimapilis', 22, 'male', '09583291732', 'ejdimap@gmail.com', 'PUTING KAHOY SILANG CAVITE PHILIPPINES', 'password', 1),
+(37, 'Marlboro', 'Red', 20, 'male', '009837261743', 'marlborored@gmail.com', 'PK TOWN', 'password', 1);
 
 -- --------------------------------------------------------
 
@@ -156,8 +139,7 @@ INSERT INTO `services` (`service_id`, `service_title`, `service_description`, `s
 (18, 'Emergency Dental Care', 'Treatment for dental emergencies such as severe toothache, broken teeth, or injuries.', NULL),
 (19, 'Teeth Whitening', 'Professional teeth whitening procedures to enhance the color and brightness of your teeth.', NULL),
 (20, 'Implant Dentistry', 'Placement of dental implants to replace missing teeth.', NULL),
-(24, 'Pasta', '', 600),
-(25, 'Trippings', 'Kahit anong description dito', 1000);
+(24, 'Pasta', '', 600);
 
 -- --------------------------------------------------------
 
@@ -179,7 +161,7 @@ CREATE TABLE `staff` (
 --
 
 INSERT INTO `staff` (`staff_id`, `firstname`, `lastname`, `position`, `contact_number`, `email`) VALUES
-(4, 'Marlboro', 'Lights', 0, '09758274628', 'unidentified@domain.com');
+(4, 'Peter', 'Griffin', 0, '09758274628', 'unidentified@domain.com');
 
 --
 -- Indexes for dumped tables
@@ -207,7 +189,8 @@ ALTER TABLE `appointments`
 -- Indexes for table `patient`
 --
 ALTER TABLE `patient`
-  ADD PRIMARY KEY (`patient_id`);
+  ADD PRIMARY KEY (`patient_id`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `services`
@@ -229,31 +212,31 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
-  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

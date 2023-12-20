@@ -34,7 +34,6 @@ def sendMessage(patient, date, time):
                         Best regards,
 
                         {patient.firstname}, {patient.lastname}
-                        {patient.treatment}
                         dentalinformationsystem@gmail.com
                     """
     message.attach(MIMEText(body_message, "plain"))

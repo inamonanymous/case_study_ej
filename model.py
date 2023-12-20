@@ -12,7 +12,6 @@ class Patient(db.Model):
     contact_number = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     address = db.Column(db.String(100), nullable=False)
-    treatment = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     is_verified = db.Column(db.Boolean, default=0)
 
@@ -38,6 +37,7 @@ class Appointments(db.Model):
     __tablename__ = 'appointments'
     appointment_id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, nullable=False)
+    service_id = db.Column(db.Integer, default=None)
     admin_id = db.Column(db.Integer)
     appointment_date = db.Column(db.Date, nullable=False)
     appointment_time = db.Column(db.Time, nullable=False)
