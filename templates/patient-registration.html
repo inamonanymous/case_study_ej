@@ -1,61 +1,100 @@
-
+{% extends "layout.html" %}
 {% block body %}
 <style>
-    .form-container {
-        max-width: 600px;
-        margin: 0 auto;
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
     }
-    .custom-dropdown {
-    position: relative;
-    width: 300px;
-    font-family: Arial, sans-serif;
-}
 
-.selected-option {
-    padding: 10px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-}
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
 
-.options-container {
-    display: none;
-    position: absolute;
-    width: 100%;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    z-index: 1000;
-}
+    .form-container {
+        padding: 20px;
+    }
 
-.option {
-    padding: 10px;
-    cursor: pointer;
-}
+    h2 {
+        color: #007bff;
+        text-align: center;
+    }
 
-.option:not(:last-child) {
-    border-bottom: 1px solid #eee;
-}
+    .btn-back {
+        display: block;
+        margin-bottom: 20px;
+        padding: 10px 20px;
+        background-color: #dc3545;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
 
-.option:hover {
-    background-color: #f8f8f8;
-}
+    .btn-back:hover {
+        background-color: #c82333;
+    }
 
-.option-title {
-    font-weight: bold;
-}
+    .form-section {
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-.option-description {
-    font-size: 0.9em;
-    color: #555;
-}
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
 
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        box-sizing: border-box;
+        background-color: #fff;
+        color: #495057;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
 </style>
 
-<div class="container mt-5">
+<div class="container">
     <div class="row">
         <div class="col-lg-8 offset-lg-2">
-            <h2 class="mb-4">Registration Form</h2>
-            <form action="/patient-registration" method="post" id="registration-form">
-                <!-- Patient Details Section -->
+            <form action="/patient-registration" method="post" id="registration-form" class="form-container">
+                <h2 class="mb-4">Registration Form</h2>
+                <a href="#" onclick="history.back()" class="btn btn-danger">Back</a>
                 <div class="form-section" id="patient-details-section">
                     <p id="get-service-description"></p>
                     <h2>Patient Details</h2>
@@ -68,7 +107,7 @@
                         <label for="lastname" class="form-label">Lastname:</label>
                         <input type="text" class="form-control" id="lastname" name="lastname" required>
                     </div>
-
+                    
                     <div class="mb-3">
                         <label for="age" class="form-label">Age:</label>
                         <input type="number" class="form-control" id="age" name="age" required>
@@ -90,7 +129,7 @@
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address:</label>
-                        <input type="text" class="form-control" id="email" name="email" required>
+                        <input type="email" class="form-control" id="email" name="email" required>
                     </div>
 
                     <div class="mb-3">
@@ -104,10 +143,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="password2" class="form-label"> Re-Enter Password:</label>
+                        <label for="password2" class="form-label">Re-Enter Password:</label>
                         <input type="password" class="form-control" id="password2" name="password2" required>
                     </div>
-                    
+
                     <button type="submit" class="btn btn-primary">Register</button>
                 </div>
             </form>

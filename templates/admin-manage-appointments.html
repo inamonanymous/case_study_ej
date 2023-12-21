@@ -64,13 +64,13 @@
                                 {% for i in appointments_obj %}
                                 <tr>
                                     <td>
-                                        {{i.service_id}}
+                                        <a href="javascript:void(0);" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a>
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
                                     </td>
                                     <td>
-                                        {{ i.admin_id }}
+                                        <a href="javascript:void(0);" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a>
                                     </td>
                                     <td>
                                         {{ i.appointment_date }}
@@ -126,13 +126,13 @@
                                 {% for i in pending_appointments_obj %}
                                 <tr>
                                     <td>
-                                        {{ i.service_id }}
+                                        <a href="javascript:void(0);" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a>
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
                                     </td>
                                     <td>
-                                        {{ i.admin_id }}
+                                        <a href="javascript:void(0);" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a>
                                     </td>
                                     <td>
                                         {{ i.appointment_date }}
@@ -188,13 +188,13 @@
                                 {% for i in approved_appointments_obj %}
                                 <tr>
                                     <td>
-                                        {{ i.service_id }}
+                                        <a href="javascript:void(0);" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a>
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
                                     </td>
                                     <td>
-                                        {{ i.admin_id }}
+                                        <a href="javascript:void(0);" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a>
                                     </td>
                                     <td>
                                         {{ i.appointment_date }}
@@ -250,13 +250,13 @@
                                 {% for i in completed_appointments_obj %}
                                 <tr>
                                     <td>
-                                        {{ i.service_id }}
+                                        <a href="javascript:void(0);" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a>
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
                                     </td>
                                     <td>
-                                        {{ i.admin_id }}
+                                        <a href="javascript:void(0);" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a>
                                     </td>
                                     <td>
                                         {{ i.appointment_date }}
@@ -308,12 +308,28 @@
     <br>
     <div class="form-section" id="patient-details-section" style="display: none; margin-top: 20px;">
         <p id="get-service-description"></p>
+        <p id="get-service-price"></p>
     </div>
 </div>
 
 
     
     <script>
+        function viewAdminDetails(id){
+            axios.get(`/get-admin-details/${id}`).then(response => {
+                alert(`Firstname: ${response.data.firstname}.\nLastname: ${response.data.lastname}.\nPosition: ${response.data.position}. \nContact Number: ${response.data.contact_number}. \nEmail: ${response.data.email}`);
+            }).catch(error => {
+                alert(error.message);
+            });
+        }
+        function viewServiceDetails(id){
+            axios.get(`/get-service-description/${id}`).then(response => {
+                alert(`Title: ${response.data.title}.\nDescription: ${response.data.description}.\nPrice: ${response.data.price!==null ? response.data.price:"Not Set"}`);
+            }).catch(error => {
+                alert("Appointment request is currently being processed. Thank you");
+            });
+        }
+
         function completeAppointment(){
             appointment_id = document.getElementById('appointment_id').value;
             service = document.getElementById('services').value;
@@ -347,12 +363,18 @@
     function enablePatientDetails(selectElement) {
         const patientDetailsSection = document.getElementById('patient-details-section');
         const serviceDescription = document.getElementById('get-service-description');
+        const servicePrice = document.getElementById('get-service-price');
         // Make sure to check the 'value' of the selectElement, not just its presence
         if (selectElement.value && selectElement.value !== '') {
             // Show the patient details section
             fetchServiceDetails(selectElement.value, details => {
                 patientDetailsSection.style.display = 'block';
                 serviceDescription.innerHTML=details.description;
+                if (details.price==null){
+                    servicePrice.innerHTML="Price: Not Set";
+                }else{
+                    servicePrice.innerHTML="Price: "+details.price;
+                }
                 console.log(details);
             })
         } else {
@@ -401,10 +423,8 @@
     
     });
 
-    
-
-
    
+  
     function approveAppointment(id){
         if (confirm("Are you sure you want to approve this appointment?")){
             axios.put(`/admin-approve-appointment/${id}`).then(response => {

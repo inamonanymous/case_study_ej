@@ -1,6 +1,7 @@
 
 {% block body %}
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <div class="container mt-4">
     <div class="row">
@@ -10,8 +11,8 @@
                 <table class="table table-hover">
                     <thead class="table-info">
                         <tr>
-                            <th>Appointment ID</th>
-                            <th>Patient ID</th>
+                            <th>Admin ID</th>
+                            <th>Service ID</th>
                             <th>Appointment Date</th>
                             <th>Appointment Time</th>
                             <th>Status</th>
@@ -21,8 +22,8 @@
                         {% if all_appointments is not none %}
                             {% for i in all_appointments %}
                                 <tr>
-                                    <td>{{ i.appointment_id }}</td>
-                                    <td>{{ i.patient_id }}</td>
+                                    <td><a href="#" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a></td>
+                                    <td><a href="#" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a></td>
                                     <td>{{ i.appointment_date }}</td>
                                     <td>{{ i.appointment_time }}</td>
                                     <td>{{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}</td>
@@ -38,6 +39,22 @@
     </div>
 </div>
 
+<script>
+    function viewAdminDetails(id){
+        axios.get(`/get-admin-details/${id}`).then(response => {
+            alert(`Firstname: ${response.data.firstname}.\nLastname: ${response.data.lastname}.\nPosition: ${response.data.position}. \nContact Number: ${response.data.contact_number}. \nEmail: ${response.data.email}`);
+        }).catch(error => {
+            alert(error.message);
+        });
+    }
+    function viewServiceDetails(id){
+        axios.get(`/get-service-description/${id}`).then(response => {
+            alert(`Title: ${response.data.title}.\nDescription: ${response.data.description}.\nPrice: ${response.data.price!==null ? response.data.price:"Not Set"}`);
+        }).catch(error => {
+            alert("Appointment request is currently being processed. Thank you");
+        });
+    }
+</script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>

@@ -11,6 +11,22 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost:3306/dentistry'
 db.init_app(app)
 Migrate(app, db)
 
+@app.route('/edit-client-details', methods=['POST'])
+def edit_client_details():
+    if 'patient-email' in session:
+        current_patient = Patient.query.filter_by(email=session.get('patient-email', "")).first()
+        data = request.form
+        current_patient.firstname = data['firstname']
+        current_patient.lastname = data['lastname']
+        current_patient.age = data['age']
+        current_patient.gender = data['gender']
+        current_patient.contact_number = data['contact_number']
+        current_patient.address = data['address']
+        db.session.commit()
+        return "<script>alert('Details edited successfully'); history.back();</script>"
+
+    return "<script>alert('Please log in first'); history.back();</script>"
+
 @app.route('/client-signout', methods=['GET'])
 def client_signout():
     session.clear()
@@ -111,13 +127,43 @@ def patient_registration():
             </script>
             """
 
+
+@app.route('/get-admin-details/<int:id>')
+def get_admin_details(id):
+    target_admin = Admin.query.filter_by(admin_id=id).first()
+    target_staff = Staff.query.filter_by(staff_id=target_admin.staff_id).first()
+    if not target_admin:
+        return jsonify({"message": "object not found"}), 401
+    
+    position = ""
+    if target_staff.position==0:
+        position = "Master User"
+    elif target_staff.position==1:
+        position = "Dentist"
+    elif target_staff.position==2:
+        position = "Hygienist"
+    elif target_staff.position==3:
+        position = "Receptionist"
+    else:
+        position = "ERROR"
+
+    return jsonify({"firstname": target_staff.firstname,
+                    "lastname": target_staff.lastname,
+                    "position": position,
+                    "contact_number": target_staff.contact_number,
+                    "email": target_staff.email
+                    }), 201
+
 @app.route('/get-service-description/<int:id>')
 def get_service_description(id):
     target_service = Services.query.filter_by(service_id=id).first()
     if not target_service:
         return jsonify({"message": "object not found"}), 401
     
-    return jsonify({"description": target_service.service_description}), 201
+    return jsonify({"description": target_service.service_description,
+                    "title": target_service.service_title,
+                    "price": target_service.service_price
+                    }), 201
 
 @app.route('/client-page')
 def client_page():

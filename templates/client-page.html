@@ -66,7 +66,7 @@
         <div class="services-container" id="client-services">
           <h2>unidentified Dental Information System</h2>
           {% if current_patient is not none %}
-            <h3>Hello {{ current_patient.email }}</h3>
+            <h3>Hello {{ current_patient.firstname }}, {{ current_patient.lastname }}</h3>
             <p>{{ 'Verified' if current_patient.is_verified else 'Unverified'}} Account</p>
             <a href="#" onclick="clientSignOut()">Sign out</a>
           {% else %}
@@ -77,19 +77,35 @@
             <li class="nav-item"><a href="#" class="nav-link" data-content-id="apointment-scheduling-content">Schedule an Appointment</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-content-id="doctors-calendar-content">Doctor's Calendar</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-content-id="medical-history-access-content">Medical History Access</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" data-content-id="profile-settings-content">Profile Settings</a></li>
           </ul>
         </div>
       </div>
       <div class="col-md-9">
         <div id="content-container">
           <div id="apointment-scheduling-content" class="content-container">
-            {% include "schedule-appointment.html" %}
+            {% if current_patient is not none %}
+              {% include "schedule-appointment.html" %}
+            {% else %}
+            <h3 class="mb-3">Nothing to see here. Please Log in First</h3>
+            {% endif %}
           </div>
           <div id="doctors-calendar-content" class="content-container">
             {% include "doctors-appointments.html" %}
           </div>
           <div id="medical-history-access-content" class="content-container">
-            {% include "medical-history.html" %}
+            {% if current_patient is not none %}
+              {% include "medical-history.html" %}
+            {% else %}
+            <h3 class="mb-3">Nothing to see here. Please Log in First</h3>
+            {% endif %}
+          </div>
+          <div id="profile-settings-content" class="content-container">
+            {% if current_patient is not none %}
+              {% include "profile-settings.html" %}
+            {% else %}
+              <h3 class="mb-3">Nothing to see here. Please Log in First</h3>
+            {% endif %}
           </div>
         </div>
       </div>
