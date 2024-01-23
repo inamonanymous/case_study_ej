@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 10, 2024 at 12:57 PM
+-- Generation Time: Jan 23, 2024 at 05:33 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -58,7 +58,7 @@ CREATE TABLE `alembic_version` (
 --
 
 INSERT INTO `alembic_version` (`version_num`) VALUES
-('d19e4a0a985a');
+('ad32d77df234');
 
 -- --------------------------------------------------------
 
@@ -73,24 +73,39 @@ CREATE TABLE `appointments` (
   `appointment_date` date NOT NULL,
   `appointment_time` time NOT NULL,
   `status` smallint(6) DEFAULT NULL COMMENT '0-pending, 1-approved, 2-completed',
-  `service_id` int(11) DEFAULT NULL
+  `request_time` datetime DEFAULT NULL,
+  `amount_paid` int(11) DEFAULT NULL,
+  `treatment` varchar(255) DEFAULT NULL,
+  `tooth` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `appointments`
 --
 
-INSERT INTO `appointments` (`appointment_id`, `patient_id`, `admin_id`, `appointment_date`, `appointment_time`, `status`, `service_id`) VALUES
-(26, 36, 5, '2023-12-23', '17:35:00', 2, 11),
-(27, 36, 5, '2023-12-30', '19:16:00', 2, 15),
-(28, 37, 5, '2024-01-06', '19:40:00', 2, 15),
-(29, 37, 5, '2023-12-30', '19:46:00', 1, NULL),
-(30, 36, 5, '2023-12-30', '04:49:00', 1, NULL),
-(31, 36, 5, '2024-01-13', '05:38:00', 2, 16),
-(32, 36, 5, '2023-12-25', '10:49:00', 1, NULL),
-(33, 39, 5, '2024-01-25', '18:54:00', 2, 12),
-(34, 39, NULL, '2024-01-06', '22:52:00', 0, NULL),
-(35, 36, 5, '2024-01-12', '19:25:00', 1, NULL);
+INSERT INTO `appointments` (`appointment_id`, `patient_id`, `admin_id`, `appointment_date`, `appointment_time`, `status`, `request_time`, `amount_paid`, `treatment`, `tooth`) VALUES
+(39, 36, 5, '2024-01-24', '09:23:00', 2, '2024-01-23 19:23:48', 1600, 'Pasta', '2b1'),
+(40, 37, 5, '2024-01-26', '09:00:00', 2, '2024-01-24 00:00:59', 1700, 'Extraction', 'Wisdom Tooth Left&Right'),
+(41, 37, 5, '2024-01-27', '00:06:00', 1, '2024-01-24 00:02:44', 0, 'Not Set', 'Not Set');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `holidays`
+--
+
+CREATE TABLE `holidays` (
+  `holiday_id` int(11) NOT NULL,
+  `holiday_title` varchar(255) NOT NULL,
+  `holiday_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `holidays`
+--
+
+INSERT INTO `holidays` (`holiday_id`, `holiday_title`, `holiday_date`) VALUES
+(1, 'Valentines Day', '2024-02-14');
 
 -- --------------------------------------------------------
 
@@ -121,36 +136,6 @@ INSERT INTO `patient` (`patient_id`, `firstname`, `lastname`, `age`, `gender`, `
 (38, 'PHP', 'PHP', 50, 'male', '09565656565', 'phpphp@php.com', 'phpphpphp', 'phpphpphp', 0),
 (39, 'Python', 'C++', 21, 'male', '0957728284', 'python@email.com', 'PK TOWN', 'password', 1),
 (40, 'C', 'System Language', 24, 'male', '09123456781', 'unidentified111@email.com', 'PUTING KAHOY SILANG CAVITE PHILIPPINES', 'password', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `services`
---
-
-CREATE TABLE `services` (
-  `service_id` int(11) NOT NULL,
-  `service_title` varchar(100) NOT NULL,
-  `service_description` varchar(255) NOT NULL,
-  `service_price` float DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `services`
---
-
-INSERT INTO `services` (`service_id`, `service_title`, `service_description`, `service_price`) VALUES
-(10, 'Tooth Extractions', 'Removal of damaged, decayed, or impacted teeth.', 500),
-(11, 'Oral Surgery', 'Procedures such as wisdom tooth extraction, dental implant placement, and jaw surgery.', 1000),
-(12, 'Gum Disease Treatment', 'Management of gum conditions like gingivitis and periodontitis through scaling, root planing, and surgical procedures.', 1000),
-(13, 'Cosmetic Dentistry', 'Services like teeth whitening, veneers, bonding, and contouring to enhance the appearance of your teeth.', NULL),
-(14, 'Oral Cancer Screening', 'Regular examinations to detect signs of oral cancer.', NULL),
-(15, 'Temporomandibular Joint (TMJ) Treatment', 'Management of jaw joint disorders and associated pain.', NULL),
-(16, 'Sedation Dentistry', 'Options for patients with dental anxiety, including nitrous oxide (laughing gas), oral sedatives, or intravenous (IV) sedation.', NULL),
-(18, 'Emergency Dental Care', 'Treatment for dental emergencies such as severe toothache, broken teeth, or injuries.', NULL),
-(19, 'Teeth Whitening', 'Professional teeth whitening procedures to enhance the color and brightness of your teeth.', NULL),
-(20, 'Implant Dentistry', 'Placement of dental implants to replace missing teeth.', NULL),
-(24, 'Pasta', '', 600);
 
 -- --------------------------------------------------------
 
@@ -199,17 +184,17 @@ ALTER TABLE `appointments`
   ADD PRIMARY KEY (`appointment_id`);
 
 --
+-- Indexes for table `holidays`
+--
+ALTER TABLE `holidays`
+  ADD PRIMARY KEY (`holiday_id`);
+
+--
 -- Indexes for table `patient`
 --
 ALTER TABLE `patient`
   ADD PRIMARY KEY (`patient_id`),
   ADD UNIQUE KEY `email` (`email`);
-
---
--- Indexes for table `services`
---
-ALTER TABLE `services`
-  ADD PRIMARY KEY (`service_id`);
 
 --
 -- Indexes for table `staff`
@@ -231,19 +216,19 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+
+--
+-- AUTO_INCREMENT for table `holidays`
+--
+ALTER TABLE `holidays`
+  MODIFY `holiday_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
   MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
-
---
--- AUTO_INCREMENT for table `services`
---
-ALTER TABLE `services`
-  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `staff`
