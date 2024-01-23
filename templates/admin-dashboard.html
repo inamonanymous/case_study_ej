@@ -114,7 +114,7 @@
                     <li class="list-group-item"><a href="#" data-content-id="manage-patients-content">Manage Patients</a></li>
                     <li class="list-group-item"><a href="#" data-content-id="manage-appointments-content">Manage Appointments</a></li>
                     <li class="list-group-item"><a href="#" data-content-id="manage-staff-content">Manage Staff</a></li>
-                    <li class="list-group-item"><a href="#" data-content-id="manage-services-content">Manage Services</a></li>
+                    <li class="list-group-item"><a href="#" data-content-id="manage-holidays-content">Manage Holidays</a></li>
                     <li class="list-group-item"><a href="#" data-content-id="account-settings-content">Account Settings</a></li>
                     <li class="list-group-item special-item" onclick="logoutLink()" id="logout-link">
                         <a href="{{ url_for('.index') }}" class="logout-link">Logout</a>
@@ -133,8 +133,8 @@
                 <div id="manage-staff-content" style="display: none;">
                     {% include "admin-manage-staff.html" %}
                 </div>
-                <div id="manage-services-content" style="display: none;">
-                    {% include "admin-manage-services.html" %}
+                <div id="manage-holidays-content" style="display: none;">
+                    {% include "admin-manage-holidays.html" %}
                 </div>
                 <div id="account-settings-content" style="display: none;">
                     {% include "admin-account-settings.html" %}

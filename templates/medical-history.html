@@ -12,9 +12,12 @@
                     <thead class="table-info">
                         <tr>
                             <th>Admin ID</th>
-                            <th>Service ID</th>
+                            <th>Treatment</th>
                             <th>Appointment Date</th>
                             <th>Appointment Time</th>
+                            <th>Request Date and Time</th>
+                            <th>Altered Tooth</th>
+                            <th>Amount Tendered</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -23,9 +26,18 @@
                             {% for i in all_appointments %}
                                 <tr>
                                     <td><a href="#" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a></td>
-                                    <td><a href="#" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a></td>
-                                    <td>{{ i.appointment_date }}</td>
-                                    <td>{{ i.appointment_time }}</td>
+                                    <td>{{ i.treatment }}</td>
+                                    <td>
+                                        {{ i.appointment_date.strftime("%B %d, %Y") }}
+                                    </td>
+                                    <td>
+                                        {{ i.appointment_time.strftime("%I:%M %p") }}
+                                    </td>
+                                    <td>
+                                        {{ i.request_time.strftime("%B %d, %Y %I:%M %p") }}
+                                    </td>
+                                    <td>{{ i.tooth }}</td>
+                                    <td>₱: {{ i.amount_paid }}</td>
                                     <td>{{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}</td>
                                 </tr>
                             {% endfor %}
@@ -45,13 +57,6 @@
             alert(`Firstname: ${response.data.firstname}.\nLastname: ${response.data.lastname}.\nPosition: ${response.data.position}. \nContact Number: ${response.data.contact_number}. \nEmail: ${response.data.email}`);
         }).catch(error => {
             alert(error.message);
-        });
-    }
-    function viewServiceDetails(id){
-        axios.get(`/get-service-description/${id}`).then(response => {
-            alert(`Title: ${response.data.title}.\nDescription: ${response.data.description}.\nPrice: ${response.data.price!==null ? response.data.price:"Not Set"}`);
-        }).catch(error => {
-            alert("Appointment request is currently being processed. Thank you");
         });
     }
 </script>

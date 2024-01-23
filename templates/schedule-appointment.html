@@ -1,11 +1,11 @@
 <div class="container mt-5">
     <div class="row">
+      <h2 class="mb-4">Schedule an Appointment</h2>
         <div class="col-md-6 offset-md-3">
-            <h2 class="mb-4">Schedule an Appointment</h2>
             <form action="/schedule-appointment" method="post" class="needs-validation" novalidate>
                 <div class="form-group">
                     <label for="date">Date (YYYY-MM-DD):</label>
-                    <input type="date" class="form-control" id="date" name="date" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" required>
+                    <input type="date" class="form-control" id="date" name="date" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" required onchange="checkDate()">
                     <div class="invalid-feedback">Please enter a valid date.</div>
                 </div>
 
@@ -15,12 +15,31 @@
                     <div class="invalid-feedback">Please enter a valid time.</div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" id="submitBtn" class="btn btn-primary" disabled>Select Date</button>
             </form>
         </div>
     </div>
 </div>
 <script>
+  function checkDate() {
+    let inputDate = document.getElementById('date').value;
+    fetch(`/validate-appointment/${inputDate}`)
+    .then(response => response.json())
+    .then(data => {
+      submitBtn = document.getElementById('submitBtn');
+      if(!data.is_available){
+        submitBtn.setAttribute('disabled', true);
+        submitBtn.innerHTML="Not Available";
+      }else{
+        submitBtn.removeAttribute('disabled');
+        submitBtn.innerHTML="Submit";
+      }
+    }
+    )
+    .catch(error => console.error('Error: ', error));
+  }
+
+
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function() {
       'use strict';

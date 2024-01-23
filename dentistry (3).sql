@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 20, 2023 at 01:25 PM
+-- Generation Time: Jan 10, 2024 at 12:57 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -39,7 +39,9 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`admin_id`, `username`, `password`, `staff_id`) VALUES
-(5, 'admin', 'password', 4);
+(5, 'admin', 'password', 4),
+(17, 'PEDRO', 'aguilar', 16),
+(18, 'fasdfasdfasdf', 'systemlang', 17);
 
 -- --------------------------------------------------------
 
@@ -82,7 +84,13 @@ INSERT INTO `appointments` (`appointment_id`, `patient_id`, `admin_id`, `appoint
 (26, 36, 5, '2023-12-23', '17:35:00', 2, 11),
 (27, 36, 5, '2023-12-30', '19:16:00', 2, 15),
 (28, 37, 5, '2024-01-06', '19:40:00', 2, 15),
-(29, 37, NULL, '2023-12-30', '19:46:00', 0, NULL);
+(29, 37, 5, '2023-12-30', '19:46:00', 1, NULL),
+(30, 36, 5, '2023-12-30', '04:49:00', 1, NULL),
+(31, 36, 5, '2024-01-13', '05:38:00', 2, 16),
+(32, 36, 5, '2023-12-25', '10:49:00', 1, NULL),
+(33, 39, 5, '2024-01-25', '18:54:00', 2, 12),
+(34, 39, NULL, '2024-01-06', '22:52:00', 0, NULL),
+(35, 36, 5, '2024-01-12', '19:25:00', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -109,7 +117,10 @@ CREATE TABLE `patient` (
 
 INSERT INTO `patient` (`patient_id`, `firstname`, `lastname`, `age`, `gender`, `contact_number`, `email`, `address`, `password`, `is_verified`) VALUES
 (36, 'Earl', 'Dimapilis', 22, 'male', '09583291732', 'ejdimap@gmail.com', 'PUTING KAHOY SILANG CAVITE PHILIPPINES', 'password', 1),
-(37, 'Marlboro', 'Red', 20, 'male', '009837261743', 'marlborored@gmail.com', 'PK TOWN', 'password', 1);
+(37, 'Marlboro', 'Red', 20, 'male', '009837261743', 'marlborored@gmail.com', 'PK TOWN', 'password', 1),
+(38, 'PHP', 'PHP', 50, 'male', '09565656565', 'phpphp@php.com', 'phpphpphp', 'phpphpphp', 0),
+(39, 'Python', 'C++', 21, 'male', '0957728284', 'python@email.com', 'PK TOWN', 'password', 1),
+(40, 'C', 'System Language', 24, 'male', '09123456781', 'unidentified111@email.com', 'PUTING KAHOY SILANG CAVITE PHILIPPINES', 'password', 0);
 
 -- --------------------------------------------------------
 
@@ -131,7 +142,7 @@ CREATE TABLE `services` (
 INSERT INTO `services` (`service_id`, `service_title`, `service_description`, `service_price`) VALUES
 (10, 'Tooth Extractions', 'Removal of damaged, decayed, or impacted teeth.', 500),
 (11, 'Oral Surgery', 'Procedures such as wisdom tooth extraction, dental implant placement, and jaw surgery.', 1000),
-(12, 'Gum Disease Treatment', 'Management of gum conditions like gingivitis and periodontitis through scaling, root planing, and surgical procedures.', NULL),
+(12, 'Gum Disease Treatment', 'Management of gum conditions like gingivitis and periodontitis through scaling, root planing, and surgical procedures.', 1000),
 (13, 'Cosmetic Dentistry', 'Services like teeth whitening, veneers, bonding, and contouring to enhance the appearance of your teeth.', NULL),
 (14, 'Oral Cancer Screening', 'Regular examinations to detect signs of oral cancer.', NULL),
 (15, 'Temporomandibular Joint (TMJ) Treatment', 'Management of jaw joint disorders and associated pain.', NULL),
@@ -161,7 +172,9 @@ CREATE TABLE `staff` (
 --
 
 INSERT INTO `staff` (`staff_id`, `firstname`, `lastname`, `position`, `contact_number`, `email`) VALUES
-(4, 'Peter', 'Griffin', 0, '09758274628', 'unidentified@domain.com');
+(4, 'Peter', 'Griffin', 0, '09758274628', 'unidentified@domain.com'),
+(16, 'joaquin', 'aguilar', 1, '2131231213', 'stephenonline25@gmail.com'),
+(17, 'C', 'systemlang', 2, 'asdfasdf', 'asdfasdfads@domain.com');
 
 --
 -- Indexes for dumped tables
@@ -212,19 +225,19 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `services`
@@ -236,7 +249,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

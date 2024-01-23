@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from model import db, Patient, Appointments, Admin, Services, Staff
+from model import db, Patient, Appointments, Admin, Staff, Holidays
 from sqlalchemy import desc
 from mailer import sendMessage
 import datetime
@@ -52,6 +52,18 @@ def delete_patient(id):
         return jsonify({"message": "patient deleted"}), 201
     return redirect(url_for('admin_dashboard'))
 
+@app.route('/validate-appointment/<string:date>', methods=['GET'])
+def validate_appointment(date):
+    timestamp_str = f"{date}"
+    timestamp = datetime.datetime.strptime(timestamp_str, "%Y-%m-%d")
+    appointment_obj = Appointments.query.filter_by(appointment_date=timestamp.date(), status=1).first()
+    holiday_obj = Holidays.query.filter_by(holiday_date=timestamp).first()
+    print("outside", holiday_obj)
+    if appointment_obj or timestamp < datetime.datetime.today() or holiday_obj:
+        print("inside",holiday_obj)
+        return jsonify({"is_available": False}), 406
+    return jsonify({"is_available": True}), 200
+
 @app.route('/schedule-appointment', methods=['POST', 'GET'])
 def schedule_appointment():
     current_patient = Patient.query.filter_by(email=session.get('patient-email', "")).first()
@@ -59,17 +71,24 @@ def schedule_appointment():
         date, time = request.form['date'], request.form['time']
         timestamp_str = f"{date} {time}"
         timestamp = datetime.datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M")
+        current_datetime = datetime.datetime.now()
+        formatted_current_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
+        timestamp_str2 = f"{date}"
+        timestamp2 = datetime.datetime.strptime(timestamp_str2, "%Y-%m-%d")
+        holiday_obj = Holidays.query.filter_by(holiday_date=timestamp2).first()
         appointment_obj = Appointments.query.filter_by(appointment_date=timestamp.date(), status=1).first()
-        if appointment_obj or timestamp < datetime.datetime.today():
+        if appointment_obj or timestamp < datetime.datetime.today() or holiday_obj:
             return """  <script>
-                            alert("Please make sure the date is not on Doctors Calendar or ahead of the current date");
-                            window.location.href="/patient-schedule";
+                            alert("Please make sure the date is not on Doctors Calendar and not on holidays, or ahead of the current date");
+                            window.location.href="/client-page";
                          </script>"""
         appointment_entry = Appointments(
             patient_id=current_patient.patient_id,
             admin_id=None,
             appointment_date=date,
             appointment_time=time,
+            request_time=formatted_current_datetime,
             status=0
         )
         db.session.add(appointment_entry)
@@ -154,23 +173,11 @@ def get_admin_details(id):
                     "email": target_staff.email
                     }), 201
 
-@app.route('/get-service-description/<int:id>')
-def get_service_description(id):
-    target_service = Services.query.filter_by(service_id=id).first()
-    if not target_service:
-        return jsonify({"message": "object not found"}), 401
-    
-    return jsonify({"description": target_service.service_description,
-                    "title": target_service.service_title,
-                    "price": target_service.service_price
-                    }), 201
-
 @app.route('/client-page')
 def client_page():
     all_appointments = Appointments.query.order_by(desc(Appointments.appointment_id)).all()
     approved_appointments = Appointments.query.filter_by(status=1).all()
     completed_appointments = Appointments.query.filter_by(status=2).all()
-    services = Services.query.all()
     if 'patient-email' in session:
         current_patient = Patient.query.filter_by(email=session.get('patient-email', "")).first()
         current_patient_history = Appointments.query.filter_by(patient_id=current_patient.patient_id).all()
@@ -178,61 +185,15 @@ def client_page():
                                 current_patient=current_patient,
                                 all_appointments=current_patient_history, 
                                 approved_appointments=approved_appointments,
-                                completed_appointments=completed_appointments,
-                                services=services)
+                                completed_appointments=completed_appointments)
     return render_template('client-page.html',
                             current_patient=None,
                             all_appointments=None, 
                             approved_appointments=approved_appointments,
-                            completed_appointments=completed_appointments,
-                            services=services)
+                            completed_appointments=completed_appointments)
 
 #admin logic
 #-------------------------------------------------------------------------------------
-@app.route('/admin-edit-service/<int:id>', methods=['PUT'])
-def admin_edit_service(id):
-    if 'admin-username' in session:
-        target_service = Services.query.filter_by(service_id=id).first()
-        data = request.get_json()
-        target_service.service_title=data.get(f"input-title-{id}")
-        target_service.service_description=data.get(f"input-description-{id}")
-        target_service.service_price=data.get(f"input-price-{id}")
-        db.session.commit()
-        return jsonify(data)
-    return redirect(url_for('index'))
-
-@app.route('/admin-delete-service/<int:id>', methods=['DELETE'])
-def admin_delete_service(id):
-    if 'admin-username' in session:
-        target_service = Services.query.filter_by(service_id=id).first()
-        if not target_service:
-            return redirect(url_for('index')), 401
-        db.session.delete(target_service)
-        db.session.commit()
-        return jsonify({"message": "service deleted"}), 200
-    return redirect(url_for('index'))
-
-@app.route('/admin-save-service', methods=['POST', 'GET'])
-def admin_save_sevice():
-    if 'admin-username' in session:
-        title, description, price = request.form['title'].strip(), request.form['description'], request.form['price'].strip()
-        check_service = Services.query.filter_by(service_title=title).first()
-        if check_service:
-            return """      <script>
-                                alert("Cannot add existing Service");
-                                window.location.href="/admin-dashboard";
-                            </script>
-                    """
-
-        service_entry = Services(
-            service_title=title,
-            service_description=description,
-            service_price=price
-        )
-        db.session.add(service_entry)
-        db.session.commit()
-        return redirect(url_for('admin_dashboard'))
-    return redirect(url_for('index'))
 
 @app.route('/admin-edit-admin/<int:id>', methods=['PUT', 'GET'])
 def admin_edit_admin(id):
@@ -380,20 +341,67 @@ def admin_delete_appointment(id):
         return jsonify({"message": "failed"}), 401
     return redirect(url_for('index'))
 
+@app.route('/admin-delete-holiday/<int:id>', methods=['DELETE'])
+def admin_delete_holiday(id):
+    if 'admin-username' in session:
+        target_holiday = Holidays.query.filter_by(holiday_id=id).first()
+        if not target_holiday:
+            return redirect(url_for('index')), 401
+        db.session.delete(target_holiday)
+        db.session.commit()
+        return jsonify({"message": "service deleted"}), 200
+    return redirect(url_for('index'))
+
+@app.route('/admin-edit-holiday/<int:id>', methods=['PUT'])
+def admin_edit_holiday(id):
+    if 'admin-username' in session:
+        data = request.get_json()
+        target_holiday = Holidays.query.filter_by(holiday_id=id).first()
+        target_holiday.holiday_title=data.get(f"input-title-{id}")
+        target_holiday.holiday_date=data.get(f"input-date-{id}")
+        db.session.commit()
+        return jsonify(data)
+    return redirect(url_for('index'))
+
+@app.route('/admin-save-holiday', methods=['POST', 'GET'])
+def admin_save_holiday():
+    if 'admin-username' in session:
+        title, date = request.form['title'].strip(), request.form['date']
+        check_holiday = Holidays.query.filter_by(holiday_title=title).first()
+        if check_holiday:
+            return """      <script>
+                                alert("Cannot add existing Holiday");
+                                window.location.href="/admin-dashboard";
+                            </script>
+                    """
+
+        holiday_entry = Holidays(
+            holiday_title=title,
+            holiday_date=date
+        )
+        db.session.add(holiday_entry)
+        db.session.commit()
+        return redirect(url_for('admin_dashboard'))
+    return redirect(url_for('index'))
+
 
 @app.route('/admin-complete-appointment/', methods=['PUT'])
 def admin_complete_appointment():
     if 'admin-username' in session:
         data = request.get_json()
         id = data['id']
-        service = data['service']
+        treatment = data['treatment']
+        tooth = data['tooth']
+        tendered = data['tendered']
         target_appointment = Appointments.query.filter_by(appointment_id=id).first()
         current_admin = Admin.query.filter_by(username=session.get('admin-username', "")).first()
         target_patient = Patient.query.filter_by(patient_id=target_appointment.patient_id).first()
         if target_appointment.status==1 and current_admin:
             target_appointment.status=2
             target_appointment.admin_id=current_admin.admin_id
-            target_appointment.service_id=service
+            target_appointment.treatment=treatment
+            target_appointment.tooth=tooth
+            target_appointment.amount_paid=tendered
             target_patient.is_verified=1
             db.session.commit()
             return jsonify({"message": "appointment status set to completed"}), 201
@@ -428,7 +436,8 @@ def admin_dashboard():
         approved_appointments_obj = Appointments.query.filter_by(status=1).order_by(desc(Appointments.appointment_id)).all()
         completed_appointments_obj = Appointments.query.filter_by(status=2).order_by(desc(Appointments.appointment_id)).all()
         staffs_obj = Staff.query.all()
-        services_obj = Services.query.all()
+        holidays_obj = Holidays.query.all()
+        
 
         return render_template('admin-dashboard.html',
                                 current_user=current_user, 
@@ -439,7 +448,7 @@ def admin_dashboard():
                                 approved_appointments_obj=approved_appointments_obj,
                                 completed_appointments_obj=completed_appointments_obj,
                                 staffs_obj=staffs_obj,
-                                services_obj=services_obj
+                                holidays_obj=holidays_obj
                                 )
     return redirect(url_for('index'))
 
@@ -481,16 +490,29 @@ def view_patient(id):
 def appointments_api():
     # Fetch your appointments from the database
     approved_appointments = Appointments.query.filter_by(status=1).all()
-    # Convert them to the JSON structure expected by FullCalendar
-    appointments_json = [
-        {
-            'title': f'Appointment with ID {appointment.appointment_date}',
+    holidays_all = Holidays.query.all()
+
+    # Convert both appointments and holidays to the JSON structure expected by FullCalendar
+    appointments_json = []
+
+    # Add approved appointments to the list
+    for appointment in approved_appointments:
+        appointment_data = {
+            'title': f'Appointment with ID {appointment.appointment_id}',
             'start': f'{appointment.appointment_date}T{appointment.appointment_time}',
-        
             # any other event properties...
         }
-        for appointment in approved_appointments  # Assume approved_appointments is a list of appointments
-    ]
+        appointments_json.append(appointment_data)
+
+    # Add holidays to the list
+    for holiday in holidays_all:
+        holiday_data = {
+            'title': f'Holiday: {holiday.holiday_title}',  # Assuming you have a name property in your Holidays model
+            'start': f'{holiday.holiday_date}',   # Adjust the property names based on your actual schema
+            # any other event properties...
+        }
+        appointments_json.append(holiday_data)
+
     return jsonify(appointments_json)
 
 

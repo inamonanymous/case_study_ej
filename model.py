@@ -37,11 +37,14 @@ class Appointments(db.Model):
     __tablename__ = 'appointments'
     appointment_id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, nullable=False)
-    service_id = db.Column(db.Integer, default=None)
     admin_id = db.Column(db.Integer)
     appointment_date = db.Column(db.Date, nullable=False)
     appointment_time = db.Column(db.Time, nullable=False)
     status = db.Column(db.SmallInteger, comment="0-pending, 1-approved, 2-completed")
+    request_time = db.Column(db.DateTime)
+    amount_paid = db.Column(db.Integer, default=0)
+    tooth = db.Column(db.String(255), default="Not Set")
+    treatment = db.Column(db.String(255), default="Not Set")
     
 
 class Staff(db.Model):
@@ -53,9 +56,8 @@ class Staff(db.Model):
     contact_number = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(100), nullable=False)
 
-class Services(db.Model):
-    __tablename__ = 'services'
-    service_id = db.Column(db.Integer, primary_key=True)
-    service_title = db.Column(db.String(100), nullable=False)
-    service_description = db.Column(db.String(255), nullable=False)
-    service_price = db.Column(db.Float)
+class Holidays(db.Model):
+    __tablename__ = 'holidays'
+    holiday_id = db.Column(db.Integer, primary_key=True)
+    holiday_title = db.Column(db.String(255), nullable=False)
+    holiday_date = db.Column(db.Date, nullable=False)

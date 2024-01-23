@@ -74,7 +74,6 @@
             <a href="#" onclick="showLogInModal()">Click here to sign in!</a>
           {% endif %}
           <ul class="nav flex-column">
-            <li class="nav-item"><a href="#" class="nav-link" data-content-id="apointment-scheduling-content">Schedule an Appointment</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-content-id="doctors-calendar-content">Doctor's Calendar</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-content-id="medical-history-access-content">Medical History Access</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-content-id="profile-settings-content">Profile Settings</a></li>
@@ -83,14 +82,20 @@
       </div>
       <div class="col-md-9">
         <div id="content-container">
-          <div id="apointment-scheduling-content" class="content-container">
+          <div id="doctors-calendar-content" class="content-container">
             {% if current_patient is not none %}
               {% include "schedule-appointment.html" %}
             {% else %}
-            <h3 class="mb-3">Nothing to see here. Please Log in First</h3>
+              <h3 class="mb-3">Nothing to see here. Please Log in First</h3>
             {% endif %}
-          </div>
-          <div id="doctors-calendar-content" class="content-container">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
             {% include "doctors-appointments.html" %}
           </div>
           <div id="medical-history-access-content" class="content-container">

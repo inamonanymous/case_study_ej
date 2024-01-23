@@ -39,7 +39,10 @@
                         <table id="allTable" style="display: none;" class="table table-striped table-hover">
                             <thead>
                                 <th>
-                                    Service ID
+                                    Treatment
+                                </th>
+                                <th>
+                                    Altered Tooth 
                                 </th>
                                 <th>
                                     Patient ID
@@ -54,7 +57,13 @@
                                     Appointment Time
                                 </th>
                                 <th>
+                                    Request Date and Time
+                                </th>
+                                <th>
                                     Status
+                                </th>
+                                <th>
+                                    Amount Tendered
                                 </th>
                                 <th>
                                     Action
@@ -64,7 +73,10 @@
                                 {% for i in appointments_obj %}
                                 <tr>
                                     <td>
-                                        <a href="javascript:void(0);" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a>
+                                        {{ i.treatment }}
+                                    </td>
+                                    <td>
+                                        {{ i.tooth }}
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
@@ -73,26 +85,33 @@
                                         <a href="javascript:void(0);" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a>
                                     </td>
                                     <td>
-                                        {{ i.appointment_date }}
+                                        {{ i.appointment_date.strftime("%B %d, %Y") }}
                                     </td>
                                     <td>
-                                        {{ i.appointment_time }}
+                                        {{ i.appointment_time.strftime("%I:%M %p") }}
+                                    </td>
+                                    <td>
+                                        {{ i.request_time.strftime("%B %d, %Y %I:%M %p") }}
                                     </td>
                                     <td>
                                         {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
                                     </td>
                                     <td>
+                                        ₱: {{ i.amount_paid }}
+                                    </td>
+                                    <td>
                                         {% if i.status==0 %}
-                                        <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
-                                        <a href="" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a href="#" onclick="approveAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-ok"></span></a>
+                                            <a href="" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==1 %}
-                                        <a href="#" onclick="showCompleteAppointmentModal({{ i.appointment_id }})"><span class="glyphicon glyphicon-bookmark"></span></a>
-                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a href="#" onclick="showCompleteAppointmentModal({{ i.appointment_id }})"><span class="glyphicon glyphicon-bookmark"></span></a>
+                                            <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% elif i.status==2 %}
-                                        <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a href="#" onclick="deleteAppointment({{ i.appointment_id }})"><span class="glyphicon glyphicon-trash"></span></a>
                                         {% else %}
                                         {% endif %}
                                     </td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -101,7 +120,10 @@
                         <table id="pending" style="display: none;" class="table table-striped table-hover">
                             <thead>
                                 <th>
-                                    Service ID
+                                    Treatment
+                                </th>
+                                <th>
+                                    Altered Tooth
                                 </th>
                                 <th>
                                     Patient ID
@@ -116,7 +138,13 @@
                                     Appointment Time
                                 </th>
                                 <th>
+                                    Request Date and Time
+                                </th>
+                                <th>
                                     Status
+                                </th>
+                                <th>
+                                    Amount Tendered
                                 </th>
                                 <th>
                                     Action
@@ -126,7 +154,10 @@
                                 {% for i in pending_appointments_obj %}
                                 <tr>
                                     <td>
-                                        <a href="javascript:void(0);" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a>
+                                        {{ i.treatment }}
+                                    </td>
+                                    <td>
+                                        {{ i.tooth }}
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
@@ -135,13 +166,19 @@
                                         <a href="javascript:void(0);" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a>
                                     </td>
                                     <td>
-                                        {{ i.appointment_date }}
+                                        {{ i.appointment_date.strftime("%B %d, %Y") }}
                                     </td>
                                     <td>
-                                        {{ i.appointment_time }}
+                                        {{ i.appointment_time.strftime("%I:%M %p") }}
+                                    </td>
+                                    <td>
+                                        {{ i.request_time.strftime("%B %d, %Y %I:%M %p") }}
                                     </td>
                                     <td>
                                         {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
+                                    </td>
+                                    <td>
+                                        ₱: {{ i.amount_paid }}
                                     </td>
                                     <td>
                                         {% if i.status==0 %}
@@ -155,6 +192,7 @@
                                         {% else %}
                                         {% endif %}
                                     </td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -163,7 +201,10 @@
                         <table id="approved" style="display: none;" class="table table-striped table-hover">
                             <thead>
                                 <th>
-                                    Service ID
+                                    Treatment
+                                </th>
+                                <th>
+                                    Altered Tooth
                                 </th>
                                 <th>
                                     Patient ID
@@ -178,7 +219,13 @@
                                     Appointment Time
                                 </th>
                                 <th>
+                                    Request Date and Time
+                                </th>
+                                <th>
                                     Status
+                                </th>
+                                <th>
+                                    Amount Tendered
                                 </th>
                                 <th>
                                     Action
@@ -188,7 +235,10 @@
                                 {% for i in approved_appointments_obj %}
                                 <tr>
                                     <td>
-                                        <a href="javascript:void(0);" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a>
+                                        {{ i.treatment }}
+                                    </td>
+                                    <td>
+                                        {{ i.tooth }}
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
@@ -197,13 +247,19 @@
                                         <a href="javascript:void(0);" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a>
                                     </td>
                                     <td>
-                                        {{ i.appointment_date }}
+                                        {{ i.appointment_date.strftime("%B %d, %Y") }}
                                     </td>
                                     <td>
-                                        {{ i.appointment_time }}
+                                        {{ i.appointment_time.strftime("%I:%M %p") }}
+                                    </td>
+                                    <td>
+                                        {{ i.request_time.strftime("%B %d, %Y %I:%M %p") }}
                                     </td>
                                     <td>
                                         {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
+                                    </td>
+                                    <td>
+                                        ₱: {{ i.amount_paid }}
                                     </td>
                                     <td>
                                         {% if i.status==0 %}
@@ -217,6 +273,7 @@
                                         {% else %}
                                         {% endif %}
                                     </td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -225,7 +282,10 @@
                         <table id="completed" style="display: none;" class="table table-striped table-hover">
                             <thead>
                                 <th>
-                                    Service ID
+                                    Treatment
+                                </th>
+                                <th>
+                                    Altered Tooth
                                 </th>
                                 <th>
                                     Patient ID
@@ -240,7 +300,13 @@
                                     Appointment Time
                                 </th>
                                 <th>
+                                    Request Date and Time
+                                </th>
+                                <th>
                                     Status
+                                </th>
+                                <th>
+                                    Amount Tendered
                                 </th>
                                 <th>
                                     Action
@@ -250,7 +316,10 @@
                                 {% for i in completed_appointments_obj %}
                                 <tr>
                                     <td>
-                                        <a href="javascript:void(0);" onclick="viewServiceDetails('{{ i.service_id }}')">{{ i.service_id }}</a>
+                                        {{ i.treatment }}
+                                    </td>
+                                    <td>
+                                        {{ i.tooth }}
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="viewPatient('{{ i.patient_id }}')">{{ i.patient_id }}</a>
@@ -259,13 +328,19 @@
                                         <a href="javascript:void(0);" onclick="viewAdminDetails('{{ i.admin_id }}')">{{ i.admin_id }}</a>
                                     </td>
                                     <td>
-                                        {{ i.appointment_date }}
+                                        {{ i.appointment_date.strftime("%B %d, %Y") }}
                                     </td>
                                     <td>
-                                        {{ i.appointment_time }}
+                                        {{ i.appointment_time.strftime("%I:%M %p") }}
+                                    </td>
+                                    <td>
+                                        {{ i.request_time.strftime("%B %d, %Y %I:%M %p") }}
                                     </td>
                                     <td>
                                         {{ 'Pending' if i.status == 0 else 'Approved' if i.status == 1 else 'Completed' if i.status == 2 else '' }}
+                                    </td>
+                                    <td>
+                                        ₱: {{ i.amount_paid }}
                                     </td>
                                     <td>
                                         {% if i.status==0 %}
@@ -279,6 +354,7 @@
                                         {% else %}
                                         {% endif %}
                                     </td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -289,27 +365,32 @@
         </div>
     </div>
 </div>
-
 <div id="completeAppointmentModal" style="display: none; padding: 20px; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; max-width: 400px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
     <a href="#" onclick="closeCompleteAppointmentModal()" style=" color: #333; font-size: 10px; float: right;">Back</a>
     <form action="" onsubmit="return completeAppointment();" style="margin-top: 10px;">
         <div class="mb-3">
-            <label for="services" class="form-label"><h3>Select a Treatment:</h3></label>
+            <label for="services" class="form-label"><h3>Complete Details</h3></label>
             <input type="hidden" name="appointment_id" id="appointment_id">
+            <!--
             <select id="services" name="treatment" class="form-select" onchange="enablePatientDetails(this)" style="width: 100%; padding: 8px; margin-top: 5px;">
                 <option selected disabled>Choose a Service</option>
                 {% for i in services_obj %}
                     <option value="{{ i.service_id }}">{{ i.service_title }}</option>
                 {% endfor %}
             </select>
+            -->
+            <br>
+            <label for="txtTreatment">Treatment:</label>
+            <input type="text" id="txtTreatment" name="txtTreatment">
+            <br>
+            <label for="txtTooth">Specific Tooth:</label>
+            <input type="text" id="txtTooth" name="txtTooth">
+            <br>
+            <label for="numTendered">Amount Tendered ₱:</label>
+            <input type="number" id="numTendered" name="numTendered">
         </div>
         <button type="submit" style="background-color: #007bff; color: #fff; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">Complete Appointment</button>
     </form>
-    <br>
-    <div class="form-section" id="patient-details-section" style="display: none; margin-top: 20px;">
-        <p id="get-service-description"></p>
-        <p id="get-service-price"></p>
-    </div>
 </div>
 
 
@@ -322,26 +403,24 @@
                 alert(error.message);
             });
         }
-        function viewServiceDetails(id){
-            axios.get(`/get-service-description/${id}`).then(response => {
-                alert(`Title: ${response.data.title}.\nDescription: ${response.data.description}.\nPrice: ${response.data.price!==null ? response.data.price:"Not Set"}`);
-            }).catch(error => {
-                alert("Appointment request is currently being processed. Thank you");
-            });
-        }
-
         function completeAppointment(){
             appointment_id = document.getElementById('appointment_id').value;
-            service = document.getElementById('services').value;
+            treatment = document.getElementById('txtTreatment').value;
+            tooth = document.getElementById('txtTooth').value;
+            tendered = document.getElementById('numTendered').value;
             formData = {
                 'id': appointment_id,
-                'service': service
+                'treatment': treatment,
+                'tooth': tooth,
+                'tendered': tendered
             }          
             if (confirm("Are you sure you want to complete this appointment?")){
                 axios.put(`/admin-complete-appointment/`, formData).then(response => {
                     console.log(response.message);
+                    alert("Appoinment Completed");
                     location.reload(true);
                 }).catch(error => {
+                    alert("Completion failed");
                     console.log(error.message);
                 });
             } else {} 
@@ -382,13 +461,7 @@
             patientDetailsSection.style.display = 'none';
         }
     }
-    function fetchServiceDetails(id, callback) {
-        axios.get(`/get-service-description/${id}`).then(response => {
-            callback(response.data);
-        }).catch(error => {
-
-        });
-    }
+   
 
 
     document.addEventListener('DOMContentLoaded', function(){
@@ -429,8 +502,10 @@
         if (confirm("Are you sure you want to approve this appointment?")){
             axios.put(`/admin-approve-appointment/${id}`).then(response => {
                 console.log(response.message);
+                alert("Appoinment Approved");
                 location.reload(true);
             }).catch(error => {
+                alert("Approval Failed");
                 console.log(error.message);
             });
         } else {}
@@ -441,7 +516,9 @@
             axios.delete(`/admin-delete-appointment/${id}`).then(response => {
                 if (response.status===201){
                     console.log(response.data.message);
+                    alert("Appoinment Deleted");
                 }else{
+                    alert("Deletion Failed");
                     console.log(response.data)
                 }
                 location.reload(true);
